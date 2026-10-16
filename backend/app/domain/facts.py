@@ -127,9 +127,19 @@ class Token:
 
 
 _MONTHS = {
-    "jan": 1, "feb": 2, "mar": 3, "apr": 4, "may": 5, "jun": 6,
-    "jul": 7, "aug": 8, "sep": 9, "oct": 10, "nov": 11, "dec": 12,
-}  # fmt: skip
+    "jan": 1,
+    "feb": 2,
+    "mar": 3,
+    "apr": 4,
+    "may": 5,
+    "jun": 6,
+    "jul": 7,
+    "aug": 8,
+    "sep": 9,
+    "oct": 10,
+    "nov": 11,
+    "dec": 12,
+}
 _MONTH = (
     r"(?P<mon>jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|june?|july?|aug(?:ust)?"
     r"|sep(?:t(?:ember)?)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?)\.?"
@@ -155,8 +165,19 @@ _TIME_12 = re.compile(
 )
 _TIME_24 = re.compile(r"\b(?P<h>[01]?\d|2[0-3])[:.](?P<min>[0-5]\d)\b")
 
-_CURRENCY = {"₹": "INR", "rs": "INR", "inr": "INR", "rupees": "INR", "$": "USD", "usd": "USD",
-             "dollars": "USD", "€": "EUR", "eur": "EUR", "£": "GBP", "gbp": "GBP"}  # fmt: skip
+_CURRENCY = {
+    "₹": "INR",
+    "rs": "INR",
+    "inr": "INR",
+    "rupees": "INR",
+    "$": "USD",
+    "usd": "USD",
+    "dollars": "USD",
+    "€": "EUR",
+    "eur": "EUR",
+    "£": "GBP",
+    "gbp": "GBP",
+}
 _NUM = r"(?P<num>\d[\d,]*(?:\.\d+)?)"
 _AMOUNT_PATTERNS = [
     re.compile(rf"(?P<cur>₹|\$|€|£|\b(?:rs\.?|inr|usd|eur|gbp)(?![a-z]))\s?{_NUM}", re.I),
@@ -330,8 +351,11 @@ def normalize_url(raw: str) -> str | None:
     if parts.port:
         host = f"{host}:{parts.port}"
     path = parts.path.rstrip("/")
-    query = [(k, v) for k, v in parse_qsl(parts.query, keep_blank_values=True)
-             if not k.lower().startswith("utm_")]  # fmt: skip
+    query = [
+        (k, v)
+        for k, v in parse_qsl(parts.query, keep_blank_values=True)
+        if not k.lower().startswith("utm_")
+    ]
     out = host + path
     if query:
         out += "?" + urlencode(query)

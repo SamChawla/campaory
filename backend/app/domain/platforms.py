@@ -71,7 +71,7 @@ def validate(platform: Platform, text: str) -> Validation:
                     "long_for_readability",
                     f"Over {LINKEDIN_READABLE} characters, LinkedIn hides the rest behind "
                     '"see more".',
-                )  # fmt: skip
+                )
             )
     elif platform == "instagram":
         if length > limit:
@@ -82,7 +82,7 @@ def validate(platform: Platform, text: str) -> Validation:
                     "error",
                     "too_many_hashtags",
                     f"Instagram allows {INSTAGRAM_MAX_HASHTAGS} hashtags; this has {hashtags}.",
-                )  # fmt: skip
+                )
             )
         if any(t.kind == "url" for t in extract_tokens(text)):
             issues.append(
@@ -90,7 +90,7 @@ def validate(platform: Platform, text: str) -> Validation:
                     "warning",
                     "link_not_clickable",
                     'Links in Instagram captions are not clickable. Say "Link in bio" instead.',
-                )  # fmt: skip
+                )
             )
     elif platform == "whatsapp":
         if length > WHATSAPP_HARD:
@@ -103,7 +103,7 @@ def validate(platform: Platform, text: str) -> Validation:
                     "warning",
                     "long_for_whatsapp",
                     f"Over {limit} characters is long for a forwarded message.",
-                )  # fmt: skip
+                )
             )
 
     ok = not any(i.level == "error" for i in issues)

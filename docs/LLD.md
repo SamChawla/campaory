@@ -335,16 +335,18 @@ Default items (from BRD 10.1) and offsets, in local time:
 |---|---|---|---|
 | Event announcement | pre | `today` next 09:00 | always |
 | Why attend | pre | S - 14 d at 10:00 | D >= 10 |
-| Speaker, mentor or judge intro | pre | S - 10 d | any of those lists non-empty (else placeholder item flagged) |
+| Speaker, mentor or judge intro (titled "Meet the ...") | pre | S - 10 d | any of those lists non-empty (else omitted; the user can add an item) |
 | Partner announcement | pre | S - 8 d | partners non-empty |
-| Registration update | pre | S - 7 d | registration_url present |
+| Registration update | pre | min(S - 7 d, final reminder - 3 d) | registration_url present |
 | Participant preparation | pre | S - 3 d | D >= 4 |
 | Final registration reminder | pre | min(registration_deadline - 1 d, S - 1 d) | registration_url present |
 | Event-day live update | event | S day 08:30 | always |
 | Post-event thank-you | post | E + 1 d at 10:00 | always |
 | Highlights, winners or resources | post | E + 3 d | always |
 
-Compression: if an item's date is before `today` (next 09:00), move it to the earliest free slot after `today`, keep order, space at least 1 day apart if possible, drop optional items (Why attend, Participant preparation) first when D < 4. Never schedule `pre` or `event` items after `S`, nor `post` items before `E`. Output is sorted by `scheduled_for`; `position` follows. All values are tz-aware.
+Times default to 10:00 local unless stated. `today` is the start of that day in the event timezone, so the earliest slot is 09:00 today.
+
+Compression: an item dated before the earliest slot moves to the earliest free slot, keeping order, at least 1 day apart. When the pre-event items do not fit before the event-day update, drop them in this order until they fit: Why attend, Participant preparation, Partner announcement, intro, Registration update. If the announcement and final reminder still do not fit 1 day apart, space them 2 hours apart; if even that fails, keep what fits. Why attend is only proposed when D >= 10 and Participant preparation when D >= 4. The event-day update is at 08:30 on the start day, or 1 hour before `S` if that is earlier, never before `today`. Never schedule `pre` items at or after the event-day update, nor `post` items before `E` + 1 d. Output is sorted by `scheduled_for`; `position` follows. All values are tz-aware. An event that starts today gets only the event-day and post items.
 
 ### 6.2 Fact guard (`domain/guard.py`)
 

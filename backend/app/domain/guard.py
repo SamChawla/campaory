@@ -59,8 +59,9 @@ def check(text: str, facts: Iterable[Fact], *, extra_dates: Iterable[date] = ())
         if any(a <= start and end <= b for a, b in covered + placeholder_spans):
             continue
         if token.kind == "relative":
-            flags.append(GuardFlag(code="RELATIVE_DATE", token=token.raw, span=token.span,
-                                   blocking=False))  # fmt: skip
+            flags.append(
+                GuardFlag(code="RELATIVE_DATE", token=token.raw, span=token.span, blocking=False)
+            )
         elif not _is_allowed(token, allowed):
             flags.append(GuardFlag(code=_CODES[token.kind], token=token.raw, span=token.span))
     return flags
