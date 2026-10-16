@@ -1,0 +1,12 @@
+FICTIONAL SAMPLE FOR TESTING. Replace or add the real event text before the demo.
+
+Riverside Open Source Hack Day 2026
+Saturday, 24 October 2026, 10:00 AM to 5:30 PM IST
+Venue: Lakeview Co-working Hall, 14 Station Road, Indore
+In person. Free entry. Limited to 80 participants.
+Who should come: students and early-career developers who want to make their first open source contribution.
+Registration: https://example.org/riverside-hackday/register (closes 22 October 2026)
+Mentors: Asha Verma (Python), Kabir Nair (JavaScript)
+Judges: Meera Iyer
+Partner: Lakeview Co-working (@lakeviewhub)
+Hashtags: #RiversideHack #Hacktoberfest

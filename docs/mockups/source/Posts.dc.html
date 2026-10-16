@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Campaory: Review posts</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F2F5F1}
+a{color:#0B1F18}a:hover{color:#000}
+@media (prefers-reduced-motion: no-preference){
+@keyframes rise{from{opacity:0;translate:0 28px}}
+@keyframes drop{from{opacity:0;translate:0 -24px}}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes wipe{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(198,242,59,.75)}60%{box-shadow:0 0 0 9px rgba(198,242,59,0)}}
+.nav{animation:drop .7s cubic-bezier(.2,.7,.2,1) both}
+main>*{animation:rise .9s cubic-bezier(.2,.7,.2,1) both}
+main>*:nth-child(2){animation-delay:.1s}
+h1 svg path{stroke-dasharray:300;stroke-dashoffset:300;animation:draw 1s .7s cubic-bezier(.6,0,.2,1) forwards}
+mark{animation:wipe 1s 1s both}
+nav[aria-label="Campaign items"] li{animation:rise .6s cubic-bezier(.2,.7,.2,1) both}
+nav[aria-label="Campaign items"] li:nth-child(2){animation-delay:.07s}
+nav[aria-label="Campaign items"] li:nth-child(3){animation-delay:.14s}
+nav[aria-label="Campaign items"] li:nth-child(4){animation-delay:.21s}
+nav[aria-label="Campaign items"] li:nth-child(5){animation-delay:.28s}
+nav[aria-label="Campaign items"] li:nth-child(6){animation-delay:.35s}
+.pulse{animation:pulse 2s ease-out infinite}
+article{transition:transform .25s ease,box-shadow .25s ease}
+article:hover{transform:translateY(-4px);box-shadow:0 16px 32px rgba(11,31,24,.12)}
+a,button{transition:translate .2s ease,background-color .2s ease}
+button:not([aria-disabled]):hover{translate:0 -2px}
+@supports (animation-timeline: view()){
+article{animation:rise linear both;animation-timeline:view();animation-range:entry 0% entry 40%}
+}
+}
+</style>
+</helmet>
+<div style="width: 100%; min-height: 1400px; background: #F2F5F1; color: #0B1F18; font-family: 'Archivo', system-ui, sans-serif; font-size: 16px; line-height: 1.5">
+
+<div style="padding: 16px 16px 0">
+<header class="nav" style="max-width: 1180px; margin: 0 auto; background: #FFFFFF; border-radius: 999px; min-height: 60px; padding: 0 12px 0 14px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 20px">
+<a href="Main.dc.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none; font-weight: 800; font-size: 20px; letter-spacing: -0.02em">
+<span aria-hidden="true" style="width: 34px; height: 34px; border-radius: 10px; background: #C6F23B; display: inline-flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 20 20"><circle cx="4" cy="10" r="2.6" fill="#0B1F18"></circle><path d="M6.5 10 16 3M6.5 10 16 7M6.5 10 16 13M6.5 10 16 17" stroke="#0B1F18" stroke-width="1.8" stroke-linecap="round" fill="none"></path></svg></span>Campaory</a>
+<nav aria-label="Progress" style="display: flex; flex-wrap: wrap; gap: 4px; font-size: 14px; font-weight: 600">
+<sc-for list="{{rail}}" as="p" hint-placeholder-count="4">
+<span style="{{p.style}}">{{p.label}}</span>
+</sc-for>
+</nav>
+<a href="Main.dc.html" style="display: inline-flex; align-items: center; height: 44px; padding: 0 22px; border-radius: 999px; background: #0B1F18; color: #FFFFFF; font-size: 15px; font-weight: 700; text-decoration: none">New campaign</a>
+</header>
+</div>
+
+<main style="max-width: 1180px; margin: 0 auto; padding: 56px 24px 80px">
+
+<div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px 24px">
+<div>
+<p style="margin: 0; font-size: 15px; font-weight: 600; color: #4F5E57">Open Source Sprint, Indore</p>
+<h1 style="margin: 8px 0 0; font-size: 60px; line-height: 1.05; font-weight: 800; letter-spacing: -0.03em; font-variation-settings: 'wdth' 118"><span style="position: relative; display: inline-block">Review the posts<svg aria-hidden="true" viewBox="0 0 240 14" preserveAspectRatio="none" style="position: absolute; left: 0; right: 0; bottom: -6px; width: 100%; height: 14px"><path d="M3 9C50 3 100 12 150 6S215 8 237 4" fill="none" stroke="#FF6A4D" stroke-width="6" stroke-linecap="round"></path></svg></span></h1>
+</div>
+<span style="display: inline-flex; align-items: center; background: #FFFFFF; border-radius: 999px; padding: 10px 20px; font-size: 16px"><strong style="font-weight: 800">1 of 16</strong>&nbsp;approved</span>
+</div>
+
+<div style="margin-top: 36px; display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start">
+
+<nav aria-label="Campaign items" style="flex: 0 1 260px; min-width: 220px; background: #FFFFFF; border-radius: 24px; padding: 10px">
+<ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px">
+<sc-for list="{{items}}" as="it" hint-placeholder-count="6">
+<li>
+<a href="Posts.dc.html" style="{{it.style}}">
+<div style="font-size: 16px; font-weight: 700">{{it.title}}</div>
+<div style="margin-top: 1px; font-size: 13px; opacity: 0.75">{{it.day}} &middot; {{it.count}}</div>
+</a>
+</li>
+</sc-for>
+</ol>
+</nav>
+
+<section style="flex: 999 1 560px; min-width: 0">
+
+<div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 20px">
+<h2 style="margin: 0; font-size: 36px; font-weight: 800; letter-spacing: -0.02em; font-variation-settings: 'wdth' 114">Announcement</h2>
+<span style="font-size: 16px; font-weight: 600">Fri 16 Oct, 18:00 IST</span>
+</div>
+<p style="margin: 6px 0 0; font-size: 17px; color: #4F5E57">Say it is happening and where to register.</p>
+
+<form style="margin-top: 22px; background: #FFFFFF; border-radius: 999px; padding: 8px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center">
+<label for="all" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Change all four drafts at once</label>
+<input id="all" type="text" placeholder="Change all four drafts at once, e.g. sound less formal" style="flex: 1 1 260px; min-width: 0; height: 48px; padding: 0 20px; border: 0; background: transparent; font: inherit; font-size: 16px; color: #0B1F18; outline: none">
+<button type="button" style="flex: 0 0 auto; height: 48px; padding: 0 24px; border: 0; border-radius: 999px; background: #C6F23B; color: #0B1F18; font: inherit; font-size: 15px; font-weight: 700">Rewrite drafts</button>
+</form>
+
+<div style="margin-top: 20px; display: flex; flex-wrap: wrap; gap: 16px">
+<sc-for list="{{variants}}" as="v" hint-placeholder-count="4">
+<article style="flex: 1 1 380px; min-width: 0; background: #FFFFFF; border-radius: 24px; padding: 22px; display: flex; flex-direction: column">
+<header style="display: flex; justify-content: space-between; align-items: center; gap: 12px">
+<div style="display: flex; align-items: center; gap: 10px">
+<span aria-hidden="true" style="{{v.badge}}">{{v.code}}</span>
+<h3 style="margin: 0; font-size: 20px; font-weight: 800; letter-spacing: -0.01em">{{v.name}}</h3>
+</div>
+<div>
+<sc-if value="{{v.isApproved}}" hint-placeholder-val="{{ false }}">
+<span style="display: inline-flex; align-items: center; gap: 6px; background: #D9F5E3; color: #0B3A27; font-size: 13px; font-weight: 700; padding: 4px 12px; border-radius: 999px"><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 6.5 5 9.5 10.5 3" fill="none" stroke="#0B3A27" stroke-width="2.2" stroke-linecap="round"></path></svg>Approved</span>
+</sc-if>
+<sc-if value="{{v.isDraft}}" hint-placeholder-val="{{ true }}">
+<span style="display: inline-flex; align-items: center; background: #E6E6E6; color: #34423B; font-size: 13px; font-weight: 700; padding: 4px 12px; border-radius: 999px">Draft</span>
+</sc-if>
+<sc-if value="{{v.isReview}}" hint-placeholder-val="{{ false }}">
+<span class="pulse" style="display: inline-flex; align-items: center; background: #C6F23B; font-size: 13px; font-weight: 700; padding: 4px 12px; border-radius: 999px">Needs review</span>
+</sc-if>
+</div>
+</header>
+<div style="margin-top: 16px; padding: 18px; background: #F4F7F3; border-radius: 16px; flex: 1">
+<p style="margin: 0; font-size: 16px; line-height: 1.6; white-space: pre-line">{{v.pre}}<sc-if value="{{v.hasPh}}" hint-placeholder-val="{{ false }}"><mark style="background: #C6F23B; color: #0B1F18; padding: 1px 6px; border-radius: 6px; font-weight: 700">{{v.ph}}</mark>{{v.post}}</sc-if></p>
+</div>
+<sc-if value="{{v.hasWarn}}" hint-placeholder-val="{{ false }}">
+<div style="margin-top: 12px; padding: 12px 16px; background: #FFD9CF; border-radius: 14px; font-size: 15px">{{v.warn}}</div>
+</sc-if>
+<div style="margin-top: 14px; font-size: 13px; color: #5B6A63">Uses: {{v.uses}}</div>
+<div style="margin-top: 2px; font-size: 13px; color: #5B6A63">{{v.count}}</div>
+<div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px">
+<sc-if value="{{v.canApprove}}" hint-placeholder-val="{{ true }}">
+<button type="button" style="height: 46px; padding: 0 24px; border: 0; border-radius: 999px; background: #0B1F18; color: #FFFFFF; font: inherit; font-size: 15px; font-weight: 700">Approve</button>
+</sc-if>
+<sc-if value="{{v.blocked}}" hint-placeholder-val="{{ false }}">
+<button type="button" aria-disabled="true" style="height: 46px; padding: 0 24px; border: 0; border-radius: 999px; background: #DADADA; color: #5B6A63; font: inherit; font-size: 15px; font-weight: 700">Approve</button>
+</sc-if>
+<sc-if value="{{v.isApproved}}" hint-placeholder-val="{{ false }}">
+<button type="button" style="height: 46px; padding: 0 20px; border: 2px solid #0B1F18; border-radius: 999px; background: transparent; color: #0B1F18; font: inherit; font-size: 15px; font-weight: 700">Copy text</button>
+<button type="button" style="height: 46px; padding: 0 20px; border: 2px solid #0B1F18; border-radius: 999px; background: transparent; color: #0B1F18; font: inherit; font-size: 15px; font-weight: 700">Open {{v.name}}</button>
+</sc-if>
+<a href="Posts.dc.html" style="font-size: 15px; font-weight: 700">Edit</a>
+<a href="Posts.dc.html" style="font-size: 15px; font-weight: 700">Make shorter</a>
+</div>
+</article>
+</sc-for>
+</div>
+
+</section>
+</div>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":1400}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const pill = 'padding: 8px 16px; border-radius: 999px; ';
+    const on = pill + 'background: #0B1F18; color: #FFFFFF';
+    const done = pill + 'background: #D9F5E3; color: #0B3A27';
+    const li = 'display: block; text-decoration: none; padding: 12px 16px; border-radius: 16px; color: #0B1F18';
+    const lisel = 'display: block; text-decoration: none; padding: 12px 16px; border-radius: 16px; background: #0B1F18; color: #FFFFFF';
+    const badge = (bg, fg) => 'width: 38px; height: 38px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 14px; font-weight: 800; background: ' + bg + '; color: ' + fg;
+    const url = 'https://sprint.example.org/register';
+    return {
+      rail: [
+        { label: '1 Brief', style: done },
+        { label: '2 Facts', style: done },
+        { label: '3 Plan', style: done },
+        { label: '4 Posts', style: on }
+      ],
+      items: [
+        { title: 'Announcement', day: '16 Oct', count: '1 of 4', style: lisel },
+        { title: 'Why come', day: '19 Oct', count: '0 of 3', style: li },
+        { title: 'What to bring', day: '21 Oct', count: '0 of 2', style: li },
+        { title: 'Last call', day: '23 Oct', count: '0 of 3', style: li },
+        { title: 'Live from the sprint', day: '24 Oct', count: '0 of 2', style: li },
+        { title: 'Thank you', day: '26 Oct', count: '0 of 2', style: li }
+      ],
+      variants: [
+        {
+          name: 'LinkedIn', code: 'in', badge: badge('#FF6A4D', '#0B1F18'), isApproved: true, isDraft: false, isReview: false, canApprove: false, blocked: false,
+          pre: 'Open Source Sprint, Indore is on Saturday 24 October, from 10:00 IST. It is a full day of contributing to open source, open to students and first-time contributors, with mentors on hand throughout.\n\nRegister here: ' + url,
+          hasPh: false, ph: '', post: '', hasWarn: false, warn: '',
+          uses: 'name, date, timezone, audience, registration link', count: '249 of 3,000 characters'
+        },
+        {
+          name: 'Instagram', code: 'ig', badge: badge('#0F3D2E', '#FFFFFF'), isApproved: false, isDraft: true, isReview: false, canApprove: true, blocked: false,
+          pre: 'Your first open source contribution can happen in Indore.\n\nOpen Source Sprint\nSat 24 Oct, 10:00 IST\nOpen to students and first-time contributors. Mentors on hand all day.\n\nRegistration link in bio.\n\n#opensource #indore #hacktoberfest',
+          hasPh: false, ph: '', post: '', hasWarn: false, warn: '',
+          uses: 'name, date, timezone, audience', count: '233 of 2,200 characters. 3 of 30 hashtags.'
+        },
+        {
+          name: 'WhatsApp', code: 'wa', badge: badge('#7AE0B0', '#0B1F18'), isApproved: false, isDraft: false, isReview: true, canApprove: false, blocked: true,
+          pre: 'Hi! Open Source Sprint is on Sat 24 Oct at 10:00 IST, at ',
+          hasPh: true, ph: '[venue]',
+          post: '. Open to students and first-time contributors. Register: ' + url + '\n\nForward this to anyone who would like to come.',
+          hasWarn: true, warn: 'This post needs the venue, and the venue is missing. Add it under Facts to approve.',
+          uses: 'name, date, timezone, venue, audience, registration link', count: '205 characters'
+        },
+        {
+          name: 'X', code: 'X', badge: badge('#8ED6FF', '#0B1F18'), isApproved: false, isDraft: true, isReview: false, canApprove: true, blocked: false,
+          pre: 'Open Source Sprint, Indore. Sat 24 Oct, 10:00 IST. Open to students and first-time contributors, with mentors all day. Register: ' + url,
+          hasPh: false, ph: '', post: '', hasWarn: false, warn: '',
+          uses: 'name, date, timezone, audience, registration link', count: '152 of 280 characters. The link counts as 23.'
+        }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

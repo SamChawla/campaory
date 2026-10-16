@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Campaory: A fact changed</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F2F5F1}
+a{color:#0B1F18}a:hover{color:#000}
+@media (prefers-reduced-motion: no-preference){
+@keyframes rise{from{opacity:0;translate:0 28px}}
+@keyframes drop{from{opacity:0;translate:0 -24px}}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes wipe{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+@keyframes nudge{50%{translate:8px 0}}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(198,242,59,.75)}60%{box-shadow:0 0 0 9px rgba(198,242,59,0)}}
+.nav{animation:drop .7s cubic-bezier(.2,.7,.2,1) both}
+main>*{animation:rise .9s cubic-bezier(.2,.7,.2,1) both}
+main>*:nth-child(2){animation-delay:.08s}
+main>*:nth-child(3){animation-delay:.16s}
+main>*:nth-child(4){animation-delay:.24s}
+main>*:nth-child(n+5){animation-delay:.32s}
+h1 svg path{stroke-dasharray:300;stroke-dashoffset:300;animation:draw 1s .7s cubic-bezier(.6,0,.2,1) forwards}
+svg[role="img"]{animation:nudge 1.6s ease-in-out infinite}
+.pulse{animation:pulse 2s ease-out infinite}
+article{transition:transform .25s ease,box-shadow .25s ease}
+article:hover{transform:translateY(-4px);box-shadow:0 16px 32px rgba(11,31,24,.12)}
+a,button{transition:translate .2s ease,background-color .2s ease}
+button:not([aria-disabled]):hover{translate:0 -2px}
+@supports (animation-timeline: view()){
+article{animation:rise linear both;animation-timeline:view();animation-range:entry 0% entry 40%}
+}
+}
+</style>
+</helmet>
+<div style="width: 100%; min-height: 1400px; background: #F2F5F1; color: #0B1F18; font-family: 'Archivo', system-ui, sans-serif; font-size: 16px; line-height: 1.5">
+
+<div style="padding: 16px 16px 0">
+<header class="nav" style="max-width: 1180px; margin: 0 auto; background: #FFFFFF; border-radius: 999px; min-height: 60px; padding: 0 12px 0 14px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 20px">
+<a href="Main.dc.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none; font-weight: 800; font-size: 20px; letter-spacing: -0.02em">
+<span aria-hidden="true" style="width: 34px; height: 34px; border-radius: 10px; background: #C6F23B; display: inline-flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 20 20"><circle cx="4" cy="10" r="2.6" fill="#0B1F18"></circle><path d="M6.5 10 16 3M6.5 10 16 7M6.5 10 16 13M6.5 10 16 17" stroke="#0B1F18" stroke-width="1.8" stroke-linecap="round" fill="none"></path></svg></span>Campaory</a>
+<nav aria-label="Progress" style="display: flex; flex-wrap: wrap; gap: 4px; font-size: 14px; font-weight: 600">
+<sc-for list="{{rail}}" as="p" hint-placeholder-count="4">
+<span style="{{p.style}}">{{p.label}}</span>
+</sc-for>
+</nav>
+<a href="Main.dc.html" style="display: inline-flex; align-items: center; height: 44px; padding: 0 22px; border-radius: 999px; background: #0B1F18; color: #FFFFFF; font-size: 15px; font-weight: 700; text-decoration: none">New campaign</a>
+</header>
+</div>
+
+<main style="max-width: 1180px; margin: 0 auto; padding: 56px 24px 80px">
+
+<p style="margin: 0; font-size: 15px; font-weight: 600; color: #4F5E57">Open Source Sprint, Indore</p>
+<h1 style="margin: 8px 0 0; font-size: 60px; line-height: 1.05; font-weight: 800; letter-spacing: -0.03em; font-variation-settings: 'wdth' 118"><span style="position: relative; display: inline-block">The start time changed<svg aria-hidden="true" viewBox="0 0 240 14" preserveAspectRatio="none" style="position: absolute; left: 0; right: 0; bottom: -6px; width: 100%; height: 14px"><path d="M3 9C50 3 100 12 150 6S215 8 237 4" fill="none" stroke="#FF6A4D" stroke-width="6" stroke-linecap="round"></path></svg></span></h1>
+<p style="margin: 24px 0 0; font-size: 18px; color: #4F5E57; max-width: 700px">Four posts mention the start time. Three are not published yet, so they are back in review with a proposed fix. One is already published and stays exactly as it is.</p>
+
+<section aria-label="What changed" style="margin-top: 32px; background: #FF6A4D; border-radius: 28px; padding: 28px 32px">
+<div style="font-size: 15px; font-weight: 700">Start date, edited by you just now</div>
+<div style="margin-top: 14px; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; font-size: 26px; font-weight: 800; letter-spacing: -0.02em; font-variation-settings: 'wdth' 110">
+<span style="text-decoration: line-through; background: #FFFFFF; padding: 4px 16px; border-radius: 999px">Sat 24 Oct 2026, 10:00 IST</span>
+<svg width="32" height="14" viewBox="0 0 32 14" aria-label="changed to" role="img"><path d="M0 7h29M23 1l7 6-7 6" fill="none" stroke="#0B1F18" stroke-width="2.5" stroke-linecap="round"></path></svg>
+<span style="background: #C6F23B; padding: 4px 16px; border-radius: 999px">Sat 24 Oct 2026, 09:30 IST</span>
+</div>
+</section>
+
+<h2 style="margin: 56px 0 4px; font-size: 32px; font-weight: 800; letter-spacing: -0.02em; font-variation-settings: 'wdth' 112">Proposed updates</h2>
+<p style="margin: 0 0 20px; font-size: 16px; color: #4F5E57">Struck-through text is removed. Highlighted text is new. Nothing changes until you accept.</p>
+
+<div style="display: flex; flex-direction: column; gap: 16px">
+<sc-for list="{{diffs}}" as="d" hint-placeholder-count="2">
+<article style="background: #FFFFFF; border-radius: 24px; padding: 24px">
+<header style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px 16px">
+<div style="display: flex; align-items: center; gap: 10px">
+<span aria-hidden="true" style="{{d.badge}}">{{d.code}}</span>
+<h3 style="margin: 0; font-size: 20px; font-weight: 800; letter-spacing: -0.01em">{{d.name}} <span style="font-weight: 500; color: #5B6A63">&middot; {{d.item}}</span></h3>
+</div>
+<span class="pulse" style="display: inline-flex; align-items: center; background: #C6F23B; font-size: 13px; font-weight: 700; padding: 4px 12px; border-radius: 999px">Needs review</span>
+</header>
+<div style="margin-top: 16px; display: flex; flex-wrap: wrap; gap: 12px">
+<div style="flex: 1 1 340px; min-width: 0; padding: 18px; background: #F4F7F3; border-radius: 16px">
+<div style="font-size: 13px; font-weight: 700; color: #5B6A63; margin-bottom: 8px">Current</div>
+<p style="margin: 0; font-size: 16px; line-height: 1.6; white-space: pre-line"><sc-for list="{{d.oldSegs}}" as="s" hint-placeholder-count="3"><span style="{{s.style}}">{{s.text}}</span></sc-for></p>
+</div>
+<div style="flex: 1 1 340px; min-width: 0; padding: 18px; background: #F4FCDD; border-radius: 16px">
+<div style="font-size: 13px; font-weight: 700; color: #5B6A63; margin-bottom: 8px">Proposed</div>
+<p style="margin: 0; font-size: 16px; line-height: 1.6; white-space: pre-line"><sc-for list="{{d.newSegs}}" as="s" hint-placeholder-count="3"><span style="{{s.style}}">{{s.text}}</span></sc-for></p>
+</div>
+</div>
+<footer style="margin-top: 18px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px">
+<span style="font-size: 15px; color: #4F5E57">Why: {{d.reason}}</span>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px">
+<button type="button" style="height: 46px; padding: 0 24px; border: 0; border-radius: 999px; background: #0B1F18; color: #FFFFFF; font: inherit; font-size: 15px; font-weight: 700">Accept update</button>
+<button type="button" style="height: 46px; padding: 0 20px; border: 2px solid #0B1F18; border-radius: 999px; background: transparent; color: #0B1F18; font: inherit; font-size: 15px; font-weight: 700">Keep current text</button>
+<a href="Change.dc.html" style="font-size: 15px; font-weight: 700">Edit</a>
+</div>
+</footer>
+</article>
+</sc-for>
+
+<article style="background: #FFFFFF; border-radius: 24px; padding: 20px 24px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px">
+<div style="display: flex; align-items: center; gap: 10px">
+<span aria-hidden="true" style="width: 38px; height: 38px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 14px; font-weight: 800; background: #7AE0B0; color: #0B1F18">wa</span>
+<h3 style="margin: 0; font-size: 20px; font-weight: 800; letter-spacing: -0.01em">WhatsApp <span style="font-weight: 500; color: #5B6A63">&middot; Announcement</span></h3>
+</div>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px">
+<span class="pulse" style="display: inline-flex; align-items: center; background: #C6F23B; font-size: 13px; font-weight: 700; padding: 4px 12px; border-radius: 999px">Needs review</span>
+<a href="Change.dc.html" style="font-size: 15px; font-weight: 700">Show the change</a>
+</div>
+</article>
+
+<article style="background: #0B1F18; color: #FFFFFF; border-radius: 24px; padding: 24px">
+<div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px">
+<div style="display: flex; align-items: center; gap: 10px">
+<span aria-hidden="true" style="width: 38px; height: 38px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 14px; font-weight: 800; background: #FF6A4D; color: #0B1F18">in</span>
+<h3 style="margin: 0; font-size: 20px; font-weight: 800; letter-spacing: -0.01em">LinkedIn <span style="font-weight: 500; color: #A8A8A8">&middot; Announcement</span></h3>
+</div>
+<span style="display: inline-flex; align-items: center; gap: 8px; background: #FFFFFF; color: #0B1F18; font-size: 13px; font-weight: 700; padding: 5px 14px; border-radius: 999px"><svg width="11" height="12" viewBox="0 0 11 12" aria-hidden="true"><path d="M2.5 5V3.5a3 3 0 0 1 6 0V5M1.5 5h8v6h-8z" fill="none" stroke="#0B1F18" stroke-width="1.6"></path></svg>Published 16 Oct. Left as is.</span>
+</div>
+<p style="margin: 14px 0 0; font-size: 16px; color: #E8E8E8; max-width: 760px">This post still says <strong style="color: #C6F23B">10:00 IST</strong>. Published posts are a record, so Campaory will not rewrite it. If the old time is already out there, post a correction yourself.</p>
+</article>
+</div>
+
+<div style="margin-top: 36px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 24px">
+<a href="Posts.dc.html" style="font-size: 16px; font-weight: 700">&larr; Back to posts</a>
+<span style="font-size: 15px; color: #4F5E57">3 posts to review. Their approvals were cleared.</span>
+</div>
+
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":1400}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const pill = 'padding: 8px 16px; border-radius: 999px; ';
+    const on = pill + 'background: #0B1F18; color: #FFFFFF';
+    const done = pill + 'background: #D9F5E3; color: #0B3A27';
+    const badge = (bg, fg) => 'width: 38px; height: 38px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 14px; font-weight: 800; background: ' + bg + '; color: ' + fg;
+    const same = '';
+    const del = 'text-decoration: line-through; background: #E0E0E0; color: #34423B; border-radius: 4px; padding: 0 3px';
+    const add = 'animation: wipe 1s .9s both; background: #C6F23B; color: #0B1F18; font-weight: 700; border-radius: 4px; padding: 0 3px';
+    const s = (text, style) => ({ text, style });
+    const url = 'https://sprint.example.org/register';
+    return {
+      rail: [
+        { label: '1 Brief', style: done },
+        { label: '2 Facts', style: done },
+        { label: '3 Plan', style: done },
+        { label: '4 Posts', style: on }
+      ],
+      diffs: [
+        {
+          name: 'Instagram', code: 'ig', badge: badge('#0F3D2E', '#FFFFFF'), item: 'Announcement', reason: 'it gives the start time.',
+          oldSegs: [
+            s('Your first open source contribution can happen in Indore.\n\nOpen Source Sprint\nSat 24 Oct, ', same),
+            s('10:00', del),
+            s(' IST\nOpen to students and first-time contributors. Mentors on hand all day.\n\nRegistration link in bio.\n\n#opensource #indore #hacktoberfest', same)
+          ],
+          newSegs: [
+            s('Your first open source contribution can happen in Indore.\n\nOpen Source Sprint\nSat 24 Oct, ', same),
+            s('09:30', add),
+            s(' IST\nOpen to students and first-time contributors. Mentors on hand all day.\n\nRegistration link in bio.\n\n#opensource #indore #hacktoberfest', same)
+          ]
+        },
+        {
+          name: 'X', code: 'X', badge: badge('#8ED6FF', '#0B1F18'), item: 'Announcement', reason: 'it gives the start time.',
+          oldSegs: [
+            s('Open Source Sprint, Indore. Sat 24 Oct, ', same),
+            s('10:00', del),
+            s(' IST. Open to students and first-time contributors, with mentors all day. Register: ' + url, same)
+          ],
+          newSegs: [
+            s('Open Source Sprint, Indore. Sat 24 Oct, ', same),
+            s('09:30', add),
+            s(' IST. Open to students and first-time contributors, with mentors all day. Register: ' + url, same)
+          ]
+        }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

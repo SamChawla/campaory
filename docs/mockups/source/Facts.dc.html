@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Campaory: Confirm the facts</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F2F5F1}
+a{color:#0B1F18}a:hover{color:#000}
+@media (prefers-reduced-motion: no-preference){
+@keyframes rise{from{opacity:0;translate:0 28px}}
+@keyframes drop{from{opacity:0;translate:0 -24px}}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes pop{from{opacity:0;scale:.4}}
+@keyframes wipe{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(198,242,59,.75)}60%{box-shadow:0 0 0 9px rgba(198,242,59,0)}}
+.nav{animation:drop .7s cubic-bezier(.2,.7,.2,1) both}
+main>*{animation:rise .9s cubic-bezier(.2,.7,.2,1) both}
+main>*:nth-child(2){animation-delay:.08s}
+main>*:nth-child(3){animation-delay:.16s}
+main>*:nth-child(4){animation-delay:.24s}
+main>*:nth-child(5){animation-delay:.32s}
+main>*:nth-child(6){animation-delay:.4s}
+main>*:nth-child(n+7){animation-delay:.48s}
+h1 svg path{stroke-dasharray:300;stroke-dashoffset:300;animation:draw 1s .7s cubic-bezier(.6,0,.2,1) forwards}
+mark{animation:wipe 1s 1s both}
+.pulse{animation:pulse 2s ease-out infinite}
+div[aria-hidden="true"]>span{animation:pop .45s cubic-bezier(.3,1.4,.5,1) both}
+div[aria-hidden="true"]>span:nth-child(1){animation-delay:.6s}
+div[aria-hidden="true"]>span:nth-child(2){animation-delay:.7s}
+div[aria-hidden="true"]>span:nth-child(3){animation-delay:.8s}
+div[aria-hidden="true"]>span:nth-child(4){animation-delay:.9s}
+div[aria-hidden="true"]>span:nth-child(5){animation-delay:1s}
+a,button{transition:translate .2s ease,background-color .2s ease}
+button:not([aria-disabled]):hover{translate:0 -2px}
+}
+</style>
+</helmet>
+<div style="width: 100%; min-height: 1300px; background: #F2F5F1; color: #0B1F18; font-family: 'Archivo', system-ui, sans-serif; font-size: 16px; line-height: 1.5">
+
+<div style="padding: 16px 16px 0">
+<header class="nav" style="max-width: 1180px; margin: 0 auto; background: #FFFFFF; border-radius: 999px; min-height: 60px; padding: 0 12px 0 14px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 20px">
+<a href="Main.dc.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none; font-weight: 800; font-size: 20px; letter-spacing: -0.02em">
+<span aria-hidden="true" style="width: 34px; height: 34px; border-radius: 10px; background: #C6F23B; display: inline-flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 20 20"><circle cx="4" cy="10" r="2.6" fill="#0B1F18"></circle><path d="M6.5 10 16 3M6.5 10 16 7M6.5 10 16 13M6.5 10 16 17" stroke="#0B1F18" stroke-width="1.8" stroke-linecap="round" fill="none"></path></svg></span>Campaory</a>
+<nav aria-label="Progress" style="display: flex; flex-wrap: wrap; gap: 4px; font-size: 14px; font-weight: 600">
+<sc-for list="{{rail}}" as="p" hint-placeholder-count="4">
+<span style="{{p.style}}">{{p.label}}</span>
+</sc-for>
+</nav>
+<a href="Main.dc.html" style="display: inline-flex; align-items: center; height: 44px; padding: 0 22px; border-radius: 999px; background: #0B1F18; color: #FFFFFF; font-size: 15px; font-weight: 700; text-decoration: none">New campaign</a>
+</header>
+</div>
+
+<main style="max-width: 1180px; margin: 0 auto; padding: 56px 24px 80px">
+
+<p style="margin: 0; font-size: 15px; font-weight: 600; color: #4F5E57">Open Source Sprint, Indore</p>
+<h1 style="margin: 8px 0 0; font-size: 60px; line-height: 1.05; font-weight: 800; letter-spacing: -0.03em; font-variation-settings: 'wdth' 118"><span style="position: relative; display: inline-block">Confirm the facts<svg aria-hidden="true" viewBox="0 0 240 14" preserveAspectRatio="none" style="position: absolute; left: 0; right: 0; bottom: -6px; width: 100%; height: 14px"><path d="M3 9C50 3 100 12 150 6S215 8 237 4" fill="none" stroke="#FF6A4D" stroke-width="6" stroke-linecap="round"></path></svg></span></h1>
+<p style="margin: 24px 0 0; font-size: 18px; color: #4F5E57; max-width: 640px">Every post will use only what is confirmed here. Check each line against its source, fix what is wrong, and confirm.</p>
+
+<div role="status" style="margin-top: 32px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px 24px; padding: 22px 28px; background: #C6F23B; border-radius: 24px">
+<div style="font-size: 18px"><strong style="font-weight: 800">4 of 5 required facts confirmed.</strong> The plan stays locked until the last one is.</div>
+<div aria-hidden="true" style="display: flex; gap: 8px">
+<span style="width: 22px; height: 22px; border-radius: 50%; background: #0B1F18"></span>
+<span style="width: 22px; height: 22px; border-radius: 50%; background: #0B1F18"></span>
+<span style="width: 22px; height: 22px; border-radius: 50%; background: #0B1F18"></span>
+<span style="width: 22px; height: 22px; border-radius: 50%; background: #0B1F18"></span>
+<span style="width: 22px; height: 22px; border-radius: 50%; border: 3px solid #0B1F18; box-sizing: border-box"></span>
+</div>
+</div>
+
+<div style="margin-top: 24px; display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start">
+
+<section aria-label="Facts" style="flex: 999 1 560px; min-width: 0; background: #FFFFFF; border-radius: 24px; padding: 8px 0">
+<sc-for list="{{rows}}" as="r" hint-placeholder-count="9">
+<div style="{{r.wrapStyle}}">
+<sc-if value="{{r.isGroup}}" hint-placeholder-val="{{ false }}">
+<h2 style="margin: 0; font-size: 14px; font-weight: 800; letter-spacing: 0.02em; color: #4F5E57">{{r.group}}</h2>
+</sc-if>
+<sc-if value="{{r.isFact}}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; flex-wrap: wrap; gap: 8px 20px; align-items: flex-start">
+<div style="flex: 0 0 140px; font-size: 15px; font-weight: 700; padding-top: 2px">{{r.label}}</div>
+<div style="flex: 1 1 240px; min-width: 0">
+<sc-if value="{{r.hasValue}}" hint-placeholder-val="{{ true }}">
+<div style="font-size: 17px; font-weight: 500">{{r.value}}</div>
+</sc-if>
+<sc-if value="{{r.noValue}}" hint-placeholder-val="{{ false }}">
+<div style="font-size: 17px; color: #5B6A63">Not found on the page</div>
+</sc-if>
+<div style="margin-top: 4px; font-size: 14px; color: #5B6A63">{{r.source}}</div>
+<sc-if value="{{r.editing}}" hint-placeholder-val="{{ false }}">
+<div style="margin-top: 16px">
+<label for="tz" style="display: block; font-size: 14px; font-weight: 700; margin-bottom: 8px">Timezone for all dates in this campaign</label>
+<input id="tz" type="text" value="IST (UTC+05:30)" style="width: 100%; box-sizing: border-box; height: 52px; padding: 0 22px; border: 2px solid #0B1F18; border-radius: 999px; font: inherit; font-size: 17px; background: #FFFFFF; color: #0B1F18">
+<div style="margin-top: 14px; display: flex; flex-wrap: wrap; gap: 10px">
+<button type="button" style="height: 48px; padding: 0 26px; border: 0; border-radius: 999px; background: #0B1F18; color: #FFFFFF; font: inherit; font-size: 15px; font-weight: 700">Confirm timezone</button>
+<button type="button" style="height: 48px; padding: 0 22px; border: 2px solid #0B1F18; border-radius: 999px; background: transparent; color: #0B1F18; font: inherit; font-size: 15px; font-weight: 700">Change</button>
+</div>
+</div>
+</sc-if>
+</div>
+<div style="flex: 0 0 138px">
+<sc-if value="{{r.isConfirmed}}" hint-placeholder-val="{{ true }}">
+<span style="display: inline-flex; align-items: center; gap: 6px; background: #D9F5E3; color: #0B3A27; font-size: 13px; font-weight: 700; padding: 4px 12px; border-radius: 999px"><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 6.5 5 9.5 10.5 3" fill="none" stroke="#0B3A27" stroke-width="2.2" stroke-linecap="round"></path></svg>Confirmed</span>
+</sc-if>
+<sc-if value="{{r.isReview}}" hint-placeholder-val="{{ false }}">
+<span class="pulse" style="display: inline-flex; align-items: center; background: #C6F23B; color: #0B1F18; font-size: 13px; font-weight: 700; padding: 4px 12px; border-radius: 999px">Needs review</span>
+</sc-if>
+<sc-if value="{{r.isMissing}}" hint-placeholder-val="{{ false }}">
+<span style="display: inline-flex; align-items: center; border: 2px dashed #8A8A8A; font-size: 13px; font-weight: 700; padding: 2px 12px; border-radius: 999px; color: #34423B">Missing</span>
+</sc-if>
+</div>
+<div style="flex: 0 0 56px; text-align: right">
+<a href="Facts.dc.html" style="font-size: 15px; font-weight: 700">{{r.action}}</a>
+</div>
+</div>
+</sc-if>
+</div>
+</sc-for>
+</section>
+
+<aside aria-label="Source" style="flex: 1 1 300px; min-width: 0; background: #0B1F18; color: #FFFFFF; border-radius: 24px; padding: 28px">
+<div style="font-size: 14px; font-weight: 600; color: #C9C9C9">Where this came from</div>
+<div style="margin-top: 4px; font-size: 24px; font-weight: 800; letter-spacing: -0.02em; font-variation-settings: 'wdth' 110">Timezone</div>
+<div style="margin-top: 18px; font-size: 13px; color: #A8A8A8; word-break: break-all">sprint.example.org/indore-2026</div>
+<p style="margin: 12px 0 0; font-size: 16px; line-height: 1.65; color: #E8E8E8">Join us in Indore for a full day of contributing to open source. The sprint is open to students and first-time contributors. <mark style="background: #C6F23B; color: #0B1F18; padding: 1px 4px; border-radius: 4px; font-weight: 600">Saturday, 24 October, 10:00 AM onwards.</mark> Mentors will be on hand throughout the day. Registrations close the day before.</p>
+<div style="margin-top: 22px; padding-top: 20px; border-top: 1px solid #34423B; font-size: 16px; color: #FFFFFF"><strong style="color: #C6F23B">The page gives a time but no timezone.</strong> Campaory guessed IST from the city. Confirm it or change it, because every reminder date depends on it.</div>
+</aside>
+
+</div>
+
+<div style="margin-top: 36px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 24px">
+<a href="Main.dc.html" style="font-size: 16px; font-weight: 700">&larr; Back</a>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px">
+<span style="font-size: 15px; color: #4F5E57">1 required fact left</span>
+<button type="button" aria-disabled="true" style="height: 56px; padding: 0 32px; border: 0; border-radius: 999px; background: #DADADA; color: #5B6A63; font: inherit; font-size: 17px; font-weight: 700">Build the plan</button>
+</div>
+</div>
+
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":1300}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const p = 'padding: 8px 16px; border-radius: 999px; ';
+    const on = p + 'background: #0B1F18; color: #FFFFFF';
+    const done = p + 'background: #D9F5E3; color: #0B3A27';
+    const todo = p + 'color: #5B6A63';
+    const g = 'padding: 20px 28px 8px';
+    const f = 'padding: 18px 28px; border-top: 1px solid #EEEEEE';
+    const sel = 'animation: wipe 1s 1.2s both; margin: 8px 12px; padding: 18px 16px; background: #EEFAC8; border-radius: 20px';
+    const fact = (label, value, source, status, action, wrap) => ({
+      isGroup: false, isFact: true, wrapStyle: wrap || f, label, value,
+      hasValue: !!value, noValue: !value, source,
+      isConfirmed: status === 'c', isReview: status === 'r', isMissing: status === 'm',
+      editing: wrap === sel, action
+    });
+    return {
+      rail: [
+        { label: '1 Brief', style: done },
+        { label: '2 Facts', style: on },
+        { label: '3 Plan', style: todo },
+        { label: '4 Posts', style: todo }
+      ],
+      rows: [
+        { isGroup: true, isFact: false, wrapStyle: g, group: 'Required before planning' },
+        fact('Event name', 'Open Source Sprint, Indore', 'Page title', 'c', 'Edit'),
+        fact('Start date', 'Saturday 24 October 2026, 10:00', 'Found in: "Saturday, 24 October, 10:00 AM onwards."', 'c', 'Edit'),
+        fact('Timezone', 'IST (UTC+05:30)', 'Not on the page. Guessed from the city.', 'r', 'Edit', sel),
+        fact('Audience', 'Students and first-time contributors', 'Found in: "open to students and first-time contributors"', 'c', 'Edit'),
+        fact('Language', 'English', 'Chosen by you', 'c', 'Edit'),
+        { isGroup: true, isFact: false, wrapStyle: g + '; border-top: 1px solid #EEEEEE', group: 'Used when available' },
+        fact('Venue', '', 'Searched the page, nothing found', 'm', 'Add'),
+        fact('Registration link', 'sprint.example.org/register', 'Link behind the "Register" button', 'c', 'Edit'),
+        fact('Registration closes', 'Friday 23 October 2026', 'Worked out from "close the day before". Check it.', 'r', 'Review')
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

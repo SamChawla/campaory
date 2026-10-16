@@ -1,0 +1,66 @@
+/* Campaory design tokens, extracted from the approved mockups (16 Oct 2026).
+   Copy to frontend/src/styles/tokens.css. */
+@import url("https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap");
+
+:root {
+  /* colour */
+  --ink: #0B1F18;
+  --ground: #F2F5F1;
+  --surface: #FFFFFF;
+  --lime: #C6F23B;          /* needs attention, primary highlight */
+  --lime-tint: #EEFAC8;
+  --lime-wash: #F4FCDD;
+  --coral: #FF6A4D;         /* accent, LinkedIn dot, destructive-ish emphasis */
+  --peach: #FFD9CF;
+  --mint: #D9F5E3;          /* approved background */
+  --mint-ink: #0B3A27;      /* approved text */
+  --forest: #0F3D2E;        /* Instagram dot (white text) */
+  --wa: #7AE0B0;            /* WhatsApp dot */
+  --x: #8ED6FF;             /* X dot */
+  --muted: #4F5E57;
+  --muted-2: #5B6A63;
+  --line: #E6E6E6;
+
+  /* type */
+  --font: "Archivo", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --wdth-display: 118;      /* font-variation-settings: 'wdth' 118 for display headings */
+  --wdth-ui: 100;
+  --fs-display: 60px;       /* hero; 44px on tablet; 34px on mobile */
+  --fs-h2: 34px;
+  --fs-h3: 22px;
+  --fs-lead: 20px;
+  --fs-body: 15px;
+  --fs-ui: 14px;
+  --fs-small: 13px;
+
+  /* shape */
+  --r-pill: 999px;
+  --r-card: 24px;
+  --r-md: 16px;
+  --r-sm: 10px;
+
+  /* motion */
+  --ease-out: cubic-bezier(.2, .7, .2, 1);
+  --ease-pop: cubic-bezier(.3, 1.4, .5, 1);
+  --dur-fast: .2s;
+  --dur: .25s;
+  --dur-reveal: .9s;
+}
+
+html { background: var(--ground); color: var(--ink); font-family: var(--font); font-size: var(--fs-body); }
+body { margin: 0; }
+h1, h2, h3 { font-weight: 800; font-variation-settings: "wdth" var(--wdth-display); letter-spacing: -0.01em; }
+:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes rise { from { opacity: 0; translate: 0 28px; } }
+  @keyframes drop { from { opacity: 0; translate: 0 -24px; } }
+  @keyframes pop  { from { opacity: 0; scale: .5; } }
+  .rise { animation: rise var(--dur-reveal) var(--ease-out) both; }
+  .card { transition: transform var(--dur) ease, box-shadow var(--dur) ease; }
+  .card:hover { transform: translateY(-4px); box-shadow: 0 16px 32px rgba(11, 31, 24, .12); }
+  button:not([aria-disabled]):hover { translate: 0 -2px; }
+  @supports (animation-timeline: view()) {
+    .reveal { animation: rise linear both; animation-timeline: view(); animation-range: entry 0% entry 40%; }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "v": 3,
+  "createdOnFiles": { "v": 1, "at": "2026-10-16T12:00:00Z" },
+  "title": "Campaory UI Design",
+  "launch": { "view": "canvas" },
+  "pages": [],
+  "boards": {
+    "Main.dc.html": { "x": 0, "y": 0, "w": 1280, "h": 2040, "title": "01 Start", "expand": "fill" },
+    "Facts.dc.html": { "x": 1360, "y": 0, "w": 1280, "h": 1300, "title": "02 Confirm facts", "expand": "fill" },
+    "Plan.dc.html": { "x": 0, "y": 2020, "w": 1280, "h": 1200, "title": "03 Plan", "expand": "fill" },
+    "Posts.dc.html": { "x": 1360, "y": 2020, "w": 1280, "h": 1400, "title": "04 Posts", "expand": "fill" },
+    "Change.dc.html": { "x": 0, "y": 3540, "w": 1280, "h": 1400, "title": "05 A fact changed", "expand": "fill" },
+    "Mobile.dc.html": { "x": 1360, "y": 3540, "w": 390, "h": 844, "title": "06 Phone: review a post" }
+  },
+  "order": ["Main.dc.html", "Facts.dc.html", "Plan.dc.html", "Posts.dc.html", "Change.dc.html", "Mobile.dc.html"],
+  "notes": {
+    "title": { "x": 0, "y": -300, "text": "Campaory: MVP screens", "kind": "title1", "maxW": 2640 }
+  },
+  "designSystems": []
+}

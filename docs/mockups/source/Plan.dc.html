@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Campaory: Campaign plan</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F2F5F1}
+a{color:#0B1F18}a:hover{color:#000}
+@media (prefers-reduced-motion: no-preference){
+@keyframes rise{from{opacity:0;translate:0 28px}}
+@keyframes drop{from{opacity:0;translate:0 -24px}}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes pop{from{opacity:0;scale:.4}}
+.nav{animation:drop .7s cubic-bezier(.2,.7,.2,1) both}
+main>*{animation:rise .9s cubic-bezier(.2,.7,.2,1) both}
+main>*:nth-child(2){animation-delay:.08s}
+main>*:nth-child(3){animation-delay:.16s}
+main>*:nth-child(4){animation-delay:.24s}
+main>*:nth-child(n+5){animation-delay:.32s}
+h1 svg path{stroke-dasharray:300;stroke-dashoffset:300;animation:draw 1s .7s cubic-bezier(.6,0,.2,1) forwards}
+.popnum{animation:pop .8s .5s cubic-bezier(.3,1.4,.5,1) both}
+div[role="list"]>span{animation:pop .45s cubic-bezier(.3,1.4,.5,1) both}
+div[role="list"]>span:nth-child(2){animation-delay:.08s}
+div[role="list"]>span:nth-child(3){animation-delay:.16s}
+div[role="list"]>span:nth-child(4){animation-delay:.24s}
+section[aria-label="Campaign items"]>div:not(:has(h2)){transition:transform .25s ease}
+section[aria-label="Campaign items"]>div:not(:has(h2)):hover{transform:translateY(-4px)}
+a,button{transition:translate .2s ease,background-color .2s ease}
+button:not([aria-disabled]):hover{translate:0 -2px}
+@supports (animation-timeline: view()){
+section[aria-label="Campaign items"]>div:not(:has(h2)){animation:rise linear both;animation-timeline:view();animation-range:entry 0% entry 40%}
+}
+}
+</style>
+</helmet>
+<div style="width: 100%; min-height: 1200px; background: #F2F5F1; color: #0B1F18; font-family: 'Archivo', system-ui, sans-serif; font-size: 16px; line-height: 1.5">
+
+<div style="padding: 16px 16px 0">
+<header class="nav" style="max-width: 1180px; margin: 0 auto; background: #FFFFFF; border-radius: 999px; min-height: 60px; padding: 0 12px 0 14px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 20px">
+<a href="Main.dc.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none; font-weight: 800; font-size: 20px; letter-spacing: -0.02em">
+<span aria-hidden="true" style="width: 34px; height: 34px; border-radius: 10px; background: #C6F23B; display: inline-flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 20 20"><circle cx="4" cy="10" r="2.6" fill="#0B1F18"></circle><path d="M6.5 10 16 3M6.5 10 16 7M6.5 10 16 13M6.5 10 16 17" stroke="#0B1F18" stroke-width="1.8" stroke-linecap="round" fill="none"></path></svg></span>Campaory</a>
+<nav aria-label="Progress" style="display: flex; flex-wrap: wrap; gap: 4px; font-size: 14px; font-weight: 600">
+<sc-for list="{{rail}}" as="p" hint-placeholder-count="4">
+<span style="{{p.style}}">{{p.label}}</span>
+</sc-for>
+</nav>
+<a href="Main.dc.html" style="display: inline-flex; align-items: center; height: 44px; padding: 0 22px; border-radius: 999px; background: #0B1F18; color: #FFFFFF; font-size: 15px; font-weight: 700; text-decoration: none">New campaign</a>
+</header>
+</div>
+
+<main style="max-width: 1180px; margin: 0 auto; padding: 56px 24px 80px">
+
+<p style="margin: 0; font-size: 15px; font-weight: 600; color: #4F5E57">Open Source Sprint, Indore &middot; Saturday 24 October 2026 &middot; all times IST</p>
+<h1 style="margin: 8px 0 0; font-size: 60px; line-height: 1.05; font-weight: 800; letter-spacing: -0.03em; font-variation-settings: 'wdth' 118"><span style="position: relative; display: inline-block">Shape the plan<svg aria-hidden="true" viewBox="0 0 240 14" preserveAspectRatio="none" style="position: absolute; left: 0; right: 0; bottom: -6px; width: 100%; height: 14px"><path d="M3 9C50 3 100 12 150 6S215 8 237 4" fill="none" stroke="#FF6A4D" stroke-width="6" stroke-linecap="round"></path></svg></span></h1>
+<p style="margin: 24px 0 0; font-size: 18px; color: #4F5E57; max-width: 640px">Six posts to schedule across the event. Rename, move or remove any of them before drafting. Dates before the event cannot be moved past it.</p>
+
+<div style="margin-top: 36px; display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start">
+
+<section aria-label="Campaign items" style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 12px">
+<sc-for list="{{rows}}" as="r" hint-placeholder-count="9">
+<div style="{{r.wrapStyle}}">
+<sc-if value="{{r.isGroup}}" hint-placeholder-val="{{ false }}">
+<h2 style="margin: 0; font-size: 26px; font-weight: 800; letter-spacing: -0.02em; font-variation-settings: 'wdth' 112">{{r.group}}</h2>
+</sc-if>
+<sc-if value="{{r.isItem}}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: flex-start">
+<div style="flex: 0 0 112px">
+<div style="font-size: 18px; font-weight: 800; letter-spacing: -0.01em">{{r.day}}</div>
+<div style="font-size: 14px; color: #5B6A63">{{r.time}}</div>
+</div>
+<div style="flex: 1 1 240px; min-width: 0">
+<div style="font-size: 22px; font-weight: 800; letter-spacing: -0.02em">{{r.title}}</div>
+<div style="margin-top: 2px; font-size: 16px; color: #4F5E57">{{r.purpose}}</div>
+<div style="margin-top: 10px; font-size: 13px; color: #5B6A63">Uses: {{r.uses}}</div>
+</div>
+<div style="flex: 0 0 auto; display: flex; gap: 6px" role="list" aria-label="Platforms">
+<sc-for list="{{r.platforms}}" as="pl" hint-placeholder-count="3">
+<span role="listitem" title="{{pl.name}}" style="{{pl.style}}">{{pl.code}}</span>
+</sc-for>
+</div>
+<div style="flex: 0 0 auto; display: flex; gap: 16px; font-size: 15px; font-weight: 700">
+<a href="Plan.dc.html">Edit</a>
+<a href="Plan.dc.html" style="color: #4F5E57">Remove</a>
+</div>
+</div>
+</sc-if>
+<sc-if value="{{r.isAdd}}" hint-placeholder-val="{{ false }}">
+<a href="Plan.dc.html" style="display: block; padding: 16px; border: 2px dashed #8A8A8A; border-radius: 24px; font-size: 16px; font-weight: 700; text-decoration: none; text-align: center">+ Add an item</a>
+</sc-if>
+</div>
+</sc-for>
+</section>
+
+<aside aria-label="Summary" style="flex: 1 1 300px; min-width: 0; background: #C6F23B; border-radius: 24px; padding: 28px">
+<div style="font-size: 15px; font-weight: 700">Ready to draft</div>
+<div class="popnum" style="margin-top: 6px; font-size: 96px; line-height: 1; font-weight: 800; letter-spacing: -0.04em; font-variation-settings: 'wdth' 118">16</div>
+<div style="margin-top: 4px; font-size: 17px; font-weight: 500">posts from 6 items</div>
+<dl style="margin: 22px 0 0; padding: 0">
+<sc-for list="{{counts}}" as="c" hint-placeholder-count="4">
+<div style="display: flex; justify-content: space-between; padding: 10px 0; border-top: 1px solid rgba(11,31,24,0.2); font-size: 16px; font-weight: 600">
+<dt>{{c.name}}</dt>
+<dd style="margin: 0; font-weight: 800">{{c.n}}</dd>
+</div>
+</sc-for>
+</dl>
+<div style="margin-top: 20px; padding: 16px 18px; background: #FFFFFF; border-radius: 18px; font-size: 15px"><strong>Venue is still missing.</strong> Posts that mention where the event is will be marked Needs review until you add it.</div>
+<a href="Posts.dc.html" style="margin-top: 22px; height: 56px; display: flex; align-items: center; justify-content: center; border-radius: 999px; background: #0B1F18; color: #FFFFFF; font-size: 17px; font-weight: 700; text-decoration: none">Draft 16 posts</a>
+<a href="Facts.dc.html" style="margin-top: 14px; display: block; text-align: center; font-size: 15px; font-weight: 700">Back to facts</a>
+</aside>
+
+</div>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":1200}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const pill = 'padding: 8px 16px; border-radius: 999px; ';
+    const on = pill + 'background: #0B1F18; color: #FFFFFF';
+    const done = pill + 'background: #D9F5E3; color: #0B3A27';
+    const g = 'padding: 28px 4px 4px';
+    const card = 'background: #FFFFFF; border-radius: 24px; padding: 24px 28px';
+    const badge = (bg, fg) => 'min-width: 38px; height: 38px; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 14px; font-weight: 800; background: ' + bg + '; color: ' + fg;
+    const P = {
+      L: { code: 'in', name: 'LinkedIn', style: badge('#FF6A4D', '#0B1F18') },
+      I: { code: 'ig', name: 'Instagram', style: badge('#0F3D2E', '#FFFFFF') },
+      W: { code: 'wa', name: 'WhatsApp', style: badge('#7AE0B0', '#0B1F18') },
+      X: { code: 'X', name: 'X', style: badge('#8ED6FF', '#0B1F18') }
+    };
+    const item = (day, time, title, purpose, uses, plats) => ({
+      isGroup: false, isItem: true, isAdd: false, wrapStyle: card, day, time, title, purpose, uses,
+      platforms: plats.split('').map((k) => P[k])
+    });
+    return {
+      rail: [
+        { label: '1 Brief', style: done },
+        { label: '2 Facts', style: done },
+        { label: '3 Plan', style: on },
+        { label: '4 Posts', style: pill + 'color: #5B6A63' }
+      ],
+      rows: [
+        { isGroup: true, isItem: false, isAdd: false, wrapStyle: g, group: 'Before the event' },
+        item('Fri 16 Oct', '18:00', 'Announcement', 'Say it is happening and where to register.', 'name, date, audience, registration link', 'LIWX'),
+        item('Mon 19 Oct', '10:00', 'Why come', 'Make the case to someone who has never contributed.', 'audience, date', 'LIX'),
+        item('Wed 21 Oct', '18:00', 'What to bring', 'Setup steps so the first hour is not lost.', 'date, venue', 'IW'),
+        item('Fri 23 Oct', '12:00', 'Last call', 'Registration closes today.', 'registration closes, registration link', 'LWX'),
+        { isGroup: false, isItem: false, isAdd: true, wrapStyle: '' },
+        { isGroup: true, isItem: false, isAdd: false, wrapStyle: g, group: 'On the day' },
+        item('Sat 24 Oct', '12:00', 'Live from the sprint', 'Short update while it is happening.', 'name, venue', 'IX'),
+        { isGroup: true, isItem: false, isAdd: false, wrapStyle: g, group: 'After' },
+        item('Mon 26 Oct', '10:00', 'Thank you', 'Thank mentors and contributors.', 'name', 'LI')
+      ],
+      counts: [
+        { name: 'LinkedIn', n: '4' },
+        { name: 'Instagram', n: '5' },
+        { name: 'WhatsApp', n: '3' },
+        { name: 'X', n: '4' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>
