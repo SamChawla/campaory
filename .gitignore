@@ -8,3 +8,6 @@ frontend/dist/
 .ruff_cache/
 test-results/
 playwright-report/
+backend/static/
+*.egg-info/
+coverage/
