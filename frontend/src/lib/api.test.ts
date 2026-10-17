@@ -5,6 +5,15 @@ function jsonResponse(status: number, body: unknown, headers: Record<string, str
   return new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json", ...headers } });
 }
 
+async function failure(p: Promise<unknown>): Promise<RateLimited> {
+  try {
+    await p;
+  } catch (e) {
+    return e as RateLimited;
+  }
+  throw new Error("expected the request to fail");
+}
+
 afterEach(() => {
   vi.restoreAllMocks();
   vi.useRealTimers();
@@ -32,7 +41,7 @@ test("error shape is parsed into ApiError", async () => {
   vi.spyOn(globalThis, "fetch").mockResolvedValue(
     jsonResponse(422, { error: { code: "blocked", message: "x", details: { missing: ["timezone"] } } }),
   );
-  const err = await request("POST", "/plan/propose", {}).catch((e) => e);
+  const err = await failure(request("POST", "/plan/propose", {}));
   expect(err).toBeInstanceOf(ApiError);
   expect(err.code).toBe("blocked");
   expect(err.status).toBe(422);
@@ -43,7 +52,7 @@ test("429 maps to RateLimited with retryAfterSeconds from the body", async () =>
   vi.spyOn(globalThis, "fetch").mockResolvedValue(
     jsonResponse(429, { error: { code: "rate_limited", message: "Try again in 12 minutes.", retry_after_seconds: 720 } }, { "Retry-After": "720" }),
   );
-  const err = await request("POST", "/brief/extract", {}).catch((e) => e);
+  const err = await failure(request("POST", "/brief/extract", {}));
   expect(err).toBeInstanceOf(RateLimited);
   expect(err.retryAfterSeconds).toBe(720);
   expect(errorMessage(err)).toMatch(/Try again in 12 minutes, or sign in/);
@@ -51,7 +60,7 @@ test("429 maps to RateLimited with retryAfterSeconds from the body", async () =>
 
 test("429 falls back to the Retry-After header", async () => {
   vi.spyOn(globalThis, "fetch").mockResolvedValue(new Response("", { status: 429, headers: { "Retry-After": "90" } }));
-  const err = await request("GET", "/config").catch((e) => e);
+  const err = await failure(request("GET", "/config"));
   expect(err.retryAfterSeconds).toBe(90);
 });
 
@@ -63,7 +72,7 @@ test("requests abort after the timeout", async () => {
         init!.signal!.addEventListener("abort", () => reject(new DOMException("aborted", "AbortError")));
       }),
   );
-  const pending = request("POST", "/posts/generate", {}, { timeoutMs: 60_000 }).catch((e) => e);
+  const pending = failure(request("POST", "/posts/generate", {}, { timeoutMs: 60_000 }));
   await vi.advanceTimersByTimeAsync(60_000);
   const err = await pending;
   expect(err).toBeInstanceOf(ApiError);
@@ -72,7 +81,7 @@ test("requests abort after the timeout", async () => {
 
 test("network failure gives a plain message", async () => {
   vi.spyOn(globalThis, "fetch").mockRejectedValue(new TypeError("Failed to fetch"));
-  const err = await request("GET", "/config").catch((e) => e);
+  const err = await failure(request("GET", "/config"));
   expect(err.code).toBe("network");
   expect(errorMessage(err)).toMatch(/could not reach/i);
 });

@@ -1,4 +1,4 @@
-﻿// The campaign store (LLD 8.2). Holds the document and mirrors user intent as actions.
+// The campaign store (LLD 8.2). Holds the document and mirrors user intent as actions.
 // Persistence: guest â†’ localStorage (300 ms debounce); saved â†’ PUT (1.5 s debounce) with the
 // optimistic version. A failed PUT keeps local state and raises a retry banner.
 import { create } from "zustand";
@@ -215,6 +215,7 @@ export const useCampaign = create<CampaignState>()((set, get) => {
     lastChange: null,
 
     init() {
+      if (get().doc) return;
       const res = loadGuest();
       if (res.status === "ok") set({ doc: res.doc, mode: "guest", lastSavedAt: res.savedAt || null });
       else if (res.status === "reset") set({ storageNotice: "reset" });
@@ -477,7 +478,8 @@ export const useCampaign = create<CampaignState>()((set, get) => {
 
     setValidation(postId, text, result) {
       set((s) => ({ validations: { ...s.validations, [postId]: { text, result } } }));
-      const p = get().doc && post(get().doc!, postId);
+      const current = get().doc;
+      const p = current ? post(current, postId) : undefined;
       if (!editable(p) || p.text !== text) return;
       if (sameValue(p.guard_flags as never, result.guard_flags as never) && sameValue(p.placeholders, result.placeholders)) return;
       commit((doc) => {
@@ -604,7 +606,7 @@ export const useCampaign = create<CampaignState>()((set, get) => {
 
     async requestRedraft(postId) {
       const { doc, lastChange } = get();
-      const p = doc && post(doc, postId);
+      const p = doc ? post(doc, postId) : undefined;
       if (!doc || !lastChange || !editable(p)) return;
       set((s) => ({ proposals: { ...s.proposals, [postId]: { state: "loading" } } }));
       try {

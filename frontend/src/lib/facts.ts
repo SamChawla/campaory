@@ -64,6 +64,8 @@ export const LIST_KEYS: FactKey[] = [...PEOPLE_KEYS, "hashtags", "handles"];
 
 export const LANGUAGE_LABEL: Record<Language, string> = { en: "English", hi: "Hindi", hinglish: "Hinglish" };
 
+export const MODE_LABEL: Record<string, string> = { offline: "In person", online: "Online", hybrid: "Hybrid" };
+
 export const FACT_HINT: Partial<Record<FactKey, string>> = {
   start_date: "Use the form YYYY-MM-DD, for example 2026-10-24.",
   end_date: "Use the form YYYY-MM-DD.",
@@ -86,6 +88,7 @@ export function isFilled(value: FactValue): boolean {
 export function factText(fact: Pick<Fact, "key" | "value">): string {
   const v = fact.value;
   if (fact.key === "language" && typeof v === "string") return LANGUAGE_LABEL[v as Language] ?? v;
+  if (fact.key === "event_mode" && typeof v === "string") return MODE_LABEL[v] ?? v;
   if (typeof v === "string") return v;
   return (v as (Person | string)[])
     .map((p) => (typeof p === "string" ? p : p.role ? `${p.name}, ${p.role}` : p.name))

@@ -253,7 +253,7 @@ export interface User {
 export interface CampaignSummary {
   id: string;
   name: string;
+  version: number;
   updated_at: string;
-  event_date?: string | null;
-  counts?: Partial<Record<PostStatus, number>>;
+  post_counts: Partial<Record<PostStatus, number>>;
 }
