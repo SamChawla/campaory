@@ -1,4 +1,5 @@
 from datetime import UTC, datetime
+from uuid import UUID
 
 import pytest
 from starlette.requests import Request
@@ -11,10 +12,12 @@ from app.core.rate_limit import (
     RateLimiter,
     Rule,
     client_ip,
+    guest_subject,
     limit_subject,
     model_rules,
     request_rules,
 )
+from app.core.security import SessionUser
 
 HOUR = 3600
 DAY = 86400
@@ -184,13 +187,41 @@ def test_missing_client_is_unknown():
 def test_guest_subject_combines_ip_and_cid_cookie():
     request = make_request({"Cookie": "cid=3f2a9c1e-77aa-4b1d-9c55-0a1b2c3d4e5f"})
 
-    subject = limit_subject(request)
+    subject = limit_subject(request, None)
 
-    assert subject == LimitSubject("guest:9.9.9.9:3f2a9c1e-77aa-4b1d-9c55-0a1b2c3d4e5f", "guest")
+    assert subject == LimitSubject(
+        "guest:9.9.9.9:3f2a9c1e-77aa-4b1d-9c55-0a1b2c3d4e5f", "guest", "9.9.9.9"
+    )
 
 
 @pytest.mark.parametrize("cid", ["", "x" * 100, "bad value!", "a;b"])
 def test_invalid_cid_is_ignored(cid):
     request = make_request({"Cookie": f"cid={cid}"})
 
-    assert limit_subject(request).key == "guest:9.9.9.9"
+    assert guest_subject(request).key == "guest:9.9.9.9"
+
+
+def test_signed_in_user_is_keyed_by_user_id():
+    user = SessionUser(
+        id=UUID("11111111-2222-3333-4444-555555555555"), email="a@b.c", name=None, avatar_url=None
+    )
+
+    subject = limit_subject(make_request({"Cookie": "cid=3f2a9c1e-77aa"}), user)
+
+    assert subject == LimitSubject("user:11111111-2222-3333-4444-555555555555", "user")
+
+
+def test_rotating_cid_is_still_bounded_per_ip(clock):
+    settings = Settings(_env_file=None, rate_guest_per_hour=2, rate_guest_per_day=100)
+    limiter = RateLimiter(clock=clock)
+
+    allowed = 0
+    for n in range(20):
+        subject = LimitSubject(f"guest:1.2.3.4:cid{n:08d}", "guest", "1.2.3.4")
+        try:
+            limiter.hit(subject.key, model_rules(settings, subject))
+            allowed += 1
+        except RateLimited:
+            pass
+
+    assert allowed == 6

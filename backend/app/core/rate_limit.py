@@ -18,11 +18,13 @@ from starlette.requests import Request
 
 from app.core.config import Settings
 from app.core.errors import AppError
+from app.core.security import OptionalUser
 
 Clock = Callable[[], float]
 HOUR = 3600.0
 DAY = 86400.0
 MINUTE = 60.0
+GUEST_IP_FACTOR = 3
 _CID = re.compile(r"[A-Za-z0-9-]{8,64}")
 
 
@@ -31,6 +33,7 @@ class Rule:
     name: str
     limit: int
     period: float
+    key: str | None = None  # charge this bucket key instead of the caller's key
 
     @property
     def rate(self) -> float:
@@ -41,6 +44,7 @@ class Rule:
 class LimitSubject:
     key: str
     kind: Literal["guest", "user"]
+    ip: str | None = None
 
 
 class RateLimited(AppError):
@@ -95,7 +99,7 @@ class RateLimiter:
             bucket.tokens -= cost
 
     def _bucket(self, key: str, rule: Rule, now: float) -> _Bucket:
-        ident = (key, rule.name)
+        ident = (rule.key or key, rule.name)
         bucket = self._buckets.get(ident)
         if bucket is None or bucket.rule != rule:
             if len(self._buckets) >= self._max_keys:
@@ -142,10 +146,18 @@ class DailyCap:
 def model_rules(settings: Settings, subject: LimitSubject) -> list[Rule]:
     if subject.kind == "user":
         return [Rule("hour", settings.rate_user_per_hour, HOUR)]
-    return [
+    rules = [
         Rule("hour", settings.rate_guest_per_hour, HOUR),
         Rule("day", settings.rate_guest_per_day, DAY),
     ]
+    if subject.ip:
+        # A fresh cid cookie per request must not mean unlimited calls from one address.
+        ip_key = f"guest-ip:{subject.ip}"
+        rules += [
+            Rule("hour", settings.rate_guest_per_hour * GUEST_IP_FACTOR, HOUR, ip_key),
+            Rule("day", settings.rate_guest_per_day * GUEST_IP_FACTOR, DAY, ip_key),
+        ]
+    return rules
 
 
 def request_rules(settings: Settings) -> list[Rule]:
@@ -164,10 +176,18 @@ def client_ip(request: Request) -> str:
     return request.client.host if request.client else "unknown"
 
 
-def limit_subject(request: Request) -> LimitSubject:
-    """Who a model call is charged to. Guests: IP plus the `cid` cookie when it is valid."""
-    key = f"guest:{client_ip(request)}"
+def guest_subject(request: Request) -> LimitSubject:
+    """Guests are keyed by IP plus the `cid` cookie when it is valid."""
+    ip = client_ip(request)
+    key = f"guest:{ip}"
     cid = request.cookies.get("cid", "")
     if _CID.fullmatch(cid):
         key += f":{cid}"
-    return LimitSubject(key, "guest")
+    return LimitSubject(key, "guest", ip)
+
+
+def limit_subject(request: Request, user: OptionalUser) -> LimitSubject:
+    """Who a model call is charged to: the signed-in user, else the guest. One dependency."""
+    if user is not None:
+        return LimitSubject(f"user:{user.id}", "user")
+    return guest_subject(request)
