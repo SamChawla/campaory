@@ -1,5 +1,5 @@
-import { Link } from "react-router-dom";
 import { PlatformDot, type Platform } from "../components/PlatformDot";
+import { OnThisDevice, StartForm } from "./StartForm";
 
 const PLATFORMS: Platform[] = ["linkedin", "instagram", "whatsapp", "x"];
 
@@ -59,11 +59,8 @@ export function Start() {
           Give Campaory a page link or your event details. You confirm the facts once, it drafts
           the LinkedIn, Instagram, WhatsApp and X posts from them, and each post waits for your OK.
         </p>
-        <p className="rise d2">
-          <Link id="start" to="/#start" className="btn btn-highlight btn-lg">
-            Try a sample event
-          </Link>
-        </p>
+        <StartForm />
+
         <p className="small muted rise d3">
           No account needed. Your work stays in this browser until you sign in to save it.
         </p>
@@ -93,6 +90,8 @@ export function Start() {
           ))}
         </ol>
       </section>
+
+      <OnThisDevice />
 
       <footer className="foot small muted">
         Drafts are written by Gemma, an open-weight model. It only sees the facts you confirmed.
