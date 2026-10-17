@@ -4,9 +4,12 @@ from fastapi import APIRouter, FastAPI
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
-from app.api import auth, campaigns, health, me
+from app.api import auth, brief, campaigns, health, impact, me, plan, posts
+from app.api import config as config_api
+from app.api.deps import install_ai
 from app.core.config import Settings, get_settings
 from app.core.errors import AppError, install_error_handlers
+from app.core.middleware import install_middleware
 from app.db.session import install_database
 
 
@@ -22,12 +25,16 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     install_error_handlers(app)
     install_database(app, settings.database_url)
     auth.install(app, settings)
+    install_ai(app, settings)
+    install_middleware(app, settings)
 
     api = APIRouter(prefix="/api")
     api.include_router(health.router)
     api.include_router(auth.router_for(settings))
     api.include_router(me.router)
     api.include_router(campaigns.router)
+    for module in (config_api, brief, plan, posts, impact):
+        api.include_router(module.router)
 
     @api.api_route(
         "/{path:path}", methods=["GET", "POST", "PUT", "DELETE", "PATCH"], include_in_schema=False
