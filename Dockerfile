@@ -10,9 +10,11 @@ ENV PYTHONUNBUFFERED=1 PIP_NO_CACHE_DIR=1
 WORKDIR /app
 COPY backend/pyproject.toml ./
 COPY backend/app ./app
+COPY backend/alembic.ini ./
+COPY backend/alembic ./alembic
 RUN pip install . && useradd --create-home campaory
 COPY --from=web /web/dist ./static
 COPY samples ./samples
 USER campaory
 EXPOSE 8000
-CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000} --proxy-headers --forwarded-allow-ips='*'"]
+CMD ["sh", "-c", "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000} --proxy-headers --forwarded-allow-ips='*'"]
