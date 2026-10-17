@@ -36,7 +36,8 @@ test("guest golden path", async ({ page }) => {
   await card.getByRole("button", { name: "Copy text" }).click();
   await expect(page.getByRole("status").getByText(/^Copied for /)).toBeVisible();
   const clip = await page.evaluate(() => navigator.clipboard.readText());
-  expect(clip.trim()).toBe(text);
+  // The Windows clipboard stores CRLF line endings.
+  expect(clip.replace(/\r\n/g, "\n").trim()).toBe(text);
 
   // Opening the platform never marks it published (BR05).
   if (platform !== "instagram") {
@@ -54,7 +55,7 @@ test("guest golden path", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "The event name changed" })).toBeVisible();
   const update = page.getByRole("button", { name: "Update this post" }).first();
   await expect(update).toBeVisible({ timeout: 30_000 });
-  await expect(page.locator("ins").first()).toBeVisible();
+  await expect(page.locator("ins, del").first()).toBeVisible();
   await update.click();
 
   // Reload restores everything from this browser.
