@@ -1,7 +1,7 @@
-# Untested blueprint. Verify field names against Render's current docs.
+# Paid plans so the service never sleeps and the database does not expire (Render credits).
 databases:
   - name: campaory-db
-    plan: free
+    plan: basic-256mb
     databaseName: campaory
     user: campaory
 
@@ -9,7 +9,7 @@ services:
   - type: web
     name: campaory
     runtime: docker
-    plan: free
+    plan: starter
     healthCheckPath: /api/health
     envVars:
       - key: APP_ENV

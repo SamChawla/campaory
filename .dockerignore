@@ -8,5 +8,5 @@ backend/static
 backend/tests
 docs
 .git
-.env
+**/.env
 *.db
