@@ -24,3 +24,10 @@ test("unknown route shows a way back", () => {
   expect(screen.getByRole("heading", { name: /page not found/i })).toBeInTheDocument();
   expect(screen.getByRole("link", { name: /back to start/i })).toHaveAttribute("href", "/");
 });
+
+test("start screen explains the four steps and where guest work is kept", () => {
+  renderAt("/");
+  expect(screen.getByRole("heading", { name: /how it works/i })).toBeInTheDocument();
+  expect(screen.getAllByRole("listitem")).toHaveLength(4);
+  expect(screen.getByText(/stays in this browser until you sign in/i)).toBeInTheDocument();
+});
