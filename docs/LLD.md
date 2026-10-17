@@ -28,7 +28,7 @@ campaory/
         impact.py             # change impact
         textdiff.py           # word diff
       llm/
-        base.py  gemma.py  ollama.py  mock.py  prompts.py  jsonrepair.py
+        base.py  gemma.py  euri.py  ollama.py  mock.py  prompts.py  jsonrepair.py
       fetch/
         safe_fetch.py  extract_text.py
       db/
@@ -60,9 +60,12 @@ campaory/
 | `BASE_URL` | `https://campaory.example.tech` | OAuth redirect base |
 | `SESSION_SECRET` | 64 random hex | required in production |
 | `DATABASE_URL` | `postgresql+psycopg://...` or `sqlite:///./dev.db` | |
-| `LLM_PROVIDER` | `mock` / `gemma` / `ollama` | default `mock` |
+| `LLM_PROVIDER` | `mock` / `gemma` / `euri` / `ollama` | default `mock` |
 | `GOOGLE_API_KEY` | | AI Studio key for gemma |
 | `GEMMA_MODEL` | verify in AI Studio | |
+| `EURI_API_KEY` | | Euri key (Bearer) |
+| `EURI_MODEL` | exact Gemma id from Euri | required for `euri` |
+| `EURI_BASE_URL` | `https://api.euron.one/api/v1/euri` | OpenAI-compatible base |
 | `OLLAMA_URL`, `OLLAMA_MODEL` | `http://localhost:11434`, `gemma3:4b` | stretch |
 | `LLM_FALLBACK_TO_MOCK` | `false` | demo safety net |
 | `LLM_TIMEOUT_SECONDS` | `45` | |
@@ -402,6 +405,8 @@ class LLMResult: data: BaseModel; provider: str; model: str; latency_ms: int; in
 `call_validated(provider, ...)`: build prompt → provider returns raw text → extract the first JSON object (strip code fences, tolerate prose before/after) → validate with Pydantic. On failure send one repair prompt ("Return only valid JSON matching this schema; here is your previous output and the error"). On second failure raise `llm_invalid_output`. Network errors and 5xx: one retry with 1 s backoff. Timeout `LLM_TIMEOUT_SECONDS`. Each call is wrapped in a Sentry span and a log line.
 
 Gemma provider (`llm/gemma.py`): POST to the Google Generative Language REST API `models/{GEMMA_MODEL}:generateContent` with `x-goog-api-key` header. Put the system text at the start of the user content (do not rely on `systemInstruction` for Gemma). Do not set JSON response mime type unless the chosen model supports it. Verify the endpoint, model id and request shape against the current Google AI docs before coding; they change.
+
+Euri provider (`llm/euri.py`): Gemma through the Euri API, which is OpenAI-compatible. POST `{EURI_BASE_URL}/chat/completions` with `Authorization: Bearer {EURI_API_KEY}` and `{model, messages, max_tokens, temperature}`. One `user` message holding the system text then the prompt (no `system` role, no `response_format`). `complete(system, prompt, max_output_tokens, temperature) -> Completion(text, provider, model, latency_ms, input_tokens, output_tokens)` returns raw text; JSON extraction and repair stay in `call_validated`. Retries once after 1 s on network errors, timeouts and 5xx; 4xx and malformed bodies are not retried. Every failure raises `LLMUnavailable` (502 `llm_unavailable`) with a generic message. Logs provider, model, latency and status only.
 
 Mock provider (`llm/mock.py`): deterministic, no network. `extract` uses simple regexes over the text; `generate` fills per-platform templates from `facts`; `revise` shortens by dropping the last sentence or hashtags; `redraft` string-replaces old with new. Must be good enough for the demo and for all tests.
 

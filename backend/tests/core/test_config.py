@@ -34,3 +34,10 @@ def test_postgres_url_uses_psycopg_driver():
     settings = Settings(_env_file=None, database_url="postgresql://u:p@h/db")
 
     assert settings.database_url.startswith("postgresql+psycopg://")
+
+
+def test_euri_provider_defaults_to_euron_base_url():
+    settings = Settings(_env_file=None, llm_provider="euri")
+
+    assert settings.llm_provider == "euri"
+    assert settings.euri_base_url == "https://api.euron.one/api/v1/euri"

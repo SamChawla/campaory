@@ -30,6 +30,10 @@ services:
         sync: false
       - key: GEMMA_MODEL
         sync: false
+      - key: EURI_API_KEY
+        sync: false
+      - key: EURI_MODEL
+        sync: false
       - key: GOOGLE_OAUTH_CLIENT_ID
         sync: false
       - key: GOOGLE_OAUTH_CLIENT_SECRET
