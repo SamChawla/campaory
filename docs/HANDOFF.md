@@ -24,21 +24,16 @@ Suggested first prompt for Claude Code:
 | Item | Why | Time | Notes |
 |---|---|---|---|
 | GitHub repo (public) | Submission requires a public repo | 5 min | Add MIT licence |
-| Google AI Studio API key | Gemma | 10 min | Then run the model check below |
+| Euri API key | Gemma 4 | have | Model check done, see below |
 | Render account | Hosting | 10 min | Connect GitHub |
 | Google Cloud OAuth client | Login | 30 min | See DEPLOYMENT 2; unverified-app screen is likely |
 | `.tech` promo claim | Domain category | 15 min | hacktoberfest.com/my/promos; verify the deadline |
 | Sentry account (optional) | Agent Tracing category | 15 min | Only if you will really use it |
 | DEV account | Submission | have | |
 
-### Gemma model check (15 minutes, do before writing `gemma.py`)
+### Gemma model check
 
-1. List models with your key (replace the key; endpoint per current Google AI docs):
-   `curl "https://generativelanguage.googleapis.com/v1beta/models?key=$GOOGLE_API_KEY"`
-2. Find Gemma entries. Note the exact `name`, the `supportedGenerationMethods`, and token limits.
-3. Call `generateContent` with the sample prompt from `samples/` asking for JSON. Record: does it return valid JSON unprompted? Does it follow the schema? Latency? Does it accept a system instruction (if not, keep the system text inside the user message)?
-4. If no Gemma model is available through this API, stop and choose: Gemma via another provider (Vertex AI, OpenRouter, Hugging Face Inference) behind the same adapter, or Ollama on your machine for development and the mock fallback for the live demo. Be honest in the article about what served the demo.
-5. Write the result into `docs/MODEL_NOTES.md` (create it): model id, date checked, behaviour, latency, quota.
+Done on 17 Oct 2026 against Euri (`google/gemma-4-26B-A4B-it`). Results in `docs/MODEL_NOTES.md`. Google AI Studio and Ollama were dropped (ADR-002 note).
 
 ## 4. Decision log (from the planning conversation)
 

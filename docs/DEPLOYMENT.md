@@ -24,11 +24,11 @@ Verify every Render and Google step against current dashboards; screens and fiel
 6. `BASE_URL` must be the host users actually use (`http://localhost:8000` locally, `https://<service>.onrender.com` on Render, no trailing slash), because the redirect URI is built from it. A mismatch shows Google's `redirect_uri_mismatch` error.
 7. Check: open `<BASE_URL>/api/auth/login/google`, sign in, and you should land on `/?auth=ok`; `GET /api/me` then returns your profile. `/?auth=failed` means the callback rejected the response (denied consent, expired state after 10 minutes, or an unverified email).
 
-## 3. Google AI Studio (Gemma)
+## 3. Euri (Gemma 4)
 
-1. Create an API key at aistudio.google.com.
-2. List available models with the models API (see HANDOFF 3) and pick the Gemma id you will use; set `GEMMA_MODEL`.
-3. Free-tier quotas are small; ADR-008 limits exist for this reason. Check the quota page before the demo.
+1. Get an API key from the Euri dashboard (euron.one). Set `EURI_API_KEY` in Render (marked `sync: false`) and in `.env`.
+2. `EURI_MODEL` is `google/gemma-4-26B-A4B-it` (set in `render.yaml`). Behaviour and latency are in `docs/MODEL_NOTES.md`.
+3. Latency is uneven (10 to 45+ s). Render runs with `LLM_TIMEOUT_SECONDS=25` and `LLM_FALLBACK_TO_MOCK=true`, so a slow call shows labelled demo output instead of an error. Check the Euri quota before the demo.
 
 ## 4. .tech domain
 
@@ -42,7 +42,7 @@ Verify every Render and Google step against current dashboards; screens and fiel
 ```
 git push origin main        # Render auto-deploys
 curl -s https://<host>/api/health
-# smoke: open the site, "Try a sample event", generate posts, confirm Demo model badge is absent when LLM_PROVIDER=gemma
+# smoke: open the site, "Try a sample event", generate posts, confirm the Demo model badge is absent when LLM_PROVIDER=euri
 ```
 
 Rollback: Render dashboard → Deploys → Rollback. Migrations are additive; avoid destructive migrations before submit.

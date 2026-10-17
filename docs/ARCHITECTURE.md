@@ -15,7 +15,7 @@ flowchart LR
     end
 
     DB[("PostgreSQL<br/>users, campaigns, facts,<br/>plan items, posts, versions")]
-    LLM["Gemma<br/>(Google AI Studio API)"]
+    LLM["Gemma 4<br/>(Euri, OpenAI-compatible API)"]
     OAUTH["Google OAuth<br/>(GitHub optional)"]
     WEB["Public event web pages"]
     SENTRY["Sentry (optional)"]
@@ -51,7 +51,7 @@ flowchart TB
     subgraph APIAPP["backend/app (FastAPI)"]
         RT["api/ routers"]
         DOM["domain/<br/>facts, planning, platforms,<br/>guard, impact"]
-        LLMX["llm/<br/>base, gemma, ollama, mock, prompts"]
+        LLMX["llm/<br/>base, euri, mock, prompts, factory"]
         FET["fetch/<br/>safe_fetch, extract_text"]
         CORE["core/<br/>rate_limit, security, sentry, config"]
         REPO["db/<br/>models, session, repo"]

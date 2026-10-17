@@ -16,7 +16,7 @@ Version 1.1, 16 Oct 2026. Read with [ARCHITECTURE](ARCHITECTURE.md) (diagrams) a
 | SPA | UI, guest state, localStorage persistence, API calls | React 18, Vite, TS, Zustand, React Router |
 | API | HTTP surface, validation, auth, rate limiting | FastAPI, Pydantic v2 |
 | Domain | Facts rules, planning dates, platform validators, guard, impact | Pure Python |
-| LLM adapter | One interface for Gemma, mock, Ollama | httpx |
+| LLM adapter | One interface for Gemma 4 via Euri and the mock | httpx |
 | Page fetcher | SSRF-safe URL fetch and text extraction | httpx, selectolax or BeautifulSoup |
 | Auth | Google OAuth, session cookie | Authlib, itsdangerous |
 | Persistence | Users and saved campaigns | SQLAlchemy 2, Alembic, Postgres |
