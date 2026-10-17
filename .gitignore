@@ -11,3 +11,6 @@ playwright-report/
 backend/static/
 *.egg-info/
 coverage/
+
+# agent worktrees
+.claude/worktrees/
