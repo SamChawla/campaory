@@ -4,6 +4,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { routes } from "./routes";
 import "./styles/tokens.css";
 import "./styles/app.css";
+import "./styles/workspace.css";
 
 const router = createBrowserRouter(routes);
 
