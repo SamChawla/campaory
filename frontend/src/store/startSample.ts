@@ -31,7 +31,15 @@ export const useStart = create<StartState>()((set, get) => ({
 
   async start(source) {
     if (get().busy) return false;
-    if (loadGuest().status === "ok" && !window.confirm("Start a new campaign? The campaign on this device will be replaced.")) return false;
+    if (loadGuest().status === "ok") {
+      const ok = await useUi.getState().askConfirm({
+        title: "Start a new campaign?",
+        message: "The campaign in this browser will be replaced.",
+        confirmLabel: "Start new",
+        cancelLabel: "Keep my campaign",
+      });
+      if (!ok) return false;
+    }
     set({ busy: source.kind, error: null, errorCode: null, errorSource: null });
     try {
       const res = await api.extract(source);

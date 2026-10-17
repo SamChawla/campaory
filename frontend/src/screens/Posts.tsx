@@ -63,10 +63,19 @@ export function Posts() {
     }
   }
 
-  function regenerate() {
+  async function regenerate() {
     if (!item) return;
     const hasApproved = itemPosts.some((x) => x.post && (x.post.status === "approved" || x.post.status === "scheduled"));
-    if (hasApproved && !window.confirm("Write this item again? Approved drafts go back to draft. Published posts stay as they are.")) return;
+    if (
+      hasApproved &&
+      !(await useUi.getState().askConfirm({
+        title: "Write this item again?",
+        message: "Approved drafts go back to draft. Published posts stay as they are.",
+        confirmLabel: "Write again",
+        cancelLabel: "Keep drafts",
+      }))
+    )
+      return;
     void generation.run([item.id]);
   }
 
@@ -170,7 +179,7 @@ export function Posts() {
                 </button>
               </form>
               <div className="item-tools">
-                <button type="button" className="link-btn" onClick={regenerate} disabled={generation.running}>
+                <button type="button" className="link-btn" onClick={() => void regenerate()} disabled={generation.running}>
                   Write this item again
                 </button>
               </div>

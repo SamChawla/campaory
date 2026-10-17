@@ -79,3 +79,21 @@ test("guest workspace shows the notice and steps, and no sign-in prompt", async 
   expect(within(steps).getAllByRole("link").map((a) => a.textContent)).toEqual(["Facts", "Plan", "Posts", "Changes", "Upcoming"]);
   expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
 });
+
+test("starting over asks in a modal and keeps the campaign on cancel", async () => {
+  saveGuest(sampleDoc());
+  mockApi({ "POST /api/brief/extract": () => ({ body: extractResponse() }) });
+  const confirmSpy = vi.spyOn(window, "confirm");
+  const { router } = renderApp("/");
+  await userEvent.click(screen.getAllByRole("button", { name: /try a sample event/i })[1]);
+  const dialog = await screen.findByRole("dialog", { name: "Start a new campaign?" });
+  expect(dialog).toHaveTextContent("The campaign in this browser will be replaced.");
+  await userEvent.click(within(dialog).getByRole("button", { name: "Keep my campaign" }));
+  expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  expect(calls.some((c) => c.key === "POST /api/brief/extract")).toBe(false);
+
+  await userEvent.click(screen.getAllByRole("button", { name: /try a sample event/i })[1]);
+  await userEvent.click(within(await screen.findByRole("dialog")).getByRole("button", { name: "Start new" }));
+  await waitFor(() => expect(router.state.location.pathname).toBe("/facts"));
+  expect(confirmSpy).not.toHaveBeenCalled();
+});

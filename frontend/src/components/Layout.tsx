@@ -6,6 +6,7 @@ import { importGuest } from "../store/importer";
 import { useSession } from "../store/session";
 import { useUi } from "../store/ui";
 import { Nav } from "./Nav";
+import { ConfirmDialog } from "./ConfirmDialog";
 import { SignInSheet } from "./SignInSheet";
 import { Toasts } from "./Toast";
 
@@ -76,6 +77,7 @@ export function Layout() {
         {booted && <Outlet />}
       </main>
       <SignInSheet />
+      <ConfirmDialog />
       <Toasts />
     </>
   );
