@@ -1,9 +1,9 @@
 """Engine and session wiring. Tables are created by Alembic; tests call create_all themselves."""
 
 from collections.abc import Iterator
-from typing import Any
+from typing import Annotated, Any
 
-from fastapi import FastAPI, Request
+from fastapi import Depends, FastAPI, Request
 from sqlalchemy import Engine, create_engine, event
 from sqlalchemy.orm import Session, sessionmaker
 from sqlalchemy.pool import StaticPool
@@ -42,3 +42,6 @@ def install_database(app: FastAPI, url: str) -> None:
 def get_db(request: Request) -> Iterator[Session]:
     with request.app.state.db_sessions() as session:
         yield session
+
+
+DbSession = Annotated[Session, Depends(get_db)]
