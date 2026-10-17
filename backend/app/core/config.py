@@ -7,6 +7,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 EXAMPLE_SECRET = "change-me-to-64-random-hex-chars"  # noqa: S105 (placeholder, rejected in prod)
 DEFAULT_STATIC_DIR = str(Path(__file__).resolve().parents[2] / "static")
+DEFAULT_SAMPLES_DIR = str(Path(__file__).resolve().parents[3] / "samples")
 
 
 class Settings(BaseSettings):
@@ -17,6 +18,7 @@ class Settings(BaseSettings):
     session_secret: str = EXAMPLE_SECRET
     database_url: str = "sqlite:///./dev.db"
     static_dir: str = DEFAULT_STATIC_DIR
+    samples_dir: str = DEFAULT_SAMPLES_DIR
 
     llm_provider: Literal["mock", "euri"] = "mock"
     llm_fallback_to_mock: bool = False

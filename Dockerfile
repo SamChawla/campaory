@@ -6,7 +6,7 @@ COPY frontend/ ./
 RUN npm run build
 
 FROM python:3.12-slim
-ENV PYTHONUNBUFFERED=1 PIP_NO_CACHE_DIR=1
+ENV PYTHONUNBUFFERED=1 PIP_NO_CACHE_DIR=1 SAMPLES_DIR=/app/samples
 WORKDIR /app
 COPY backend/pyproject.toml ./
 COPY backend/app ./app

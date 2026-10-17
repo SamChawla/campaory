@@ -33,7 +33,7 @@ router = APIRouter()
 MIN_CHARS = 40
 MAX_CHARS = 20_000
 JS_HINT_CHARS = 600
-SAMPLE_PATH = Path(__file__).resolve().parents[3] / "samples" / "sample_event.txt"
+SAMPLE_FILE = "sample_event.txt"
 FACT_KEYS: tuple[str, ...] = get_args(FactKey)
 PEOPLE = frozenset({"speakers", "judges", "mentors", "partners"})
 DATES = frozenset({"start_date", "end_date", "registration_deadline"})
@@ -49,7 +49,8 @@ async def extract(
     warnings: list[str] = []
 
     if source.kind == "sample":
-        text = SAMPLE_PATH.read_text(encoding="utf-8")
+        sample = Path(request.app.state.settings.samples_dir) / SAMPLE_FILE
+        text = sample.read_text(encoding="utf-8")
         facts = _candidates(
             [ExtractedFact.model_validate(f) for f in extract_facts(text)], text, "sample", warnings
         )

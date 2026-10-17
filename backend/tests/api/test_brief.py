@@ -3,11 +3,13 @@ import functools
 import httpx
 import pytest
 import respx
+from fastapi.testclient import TestClient
 from helpers import CapturingProvider
 
 from app.fetch.safe_fetch import safe_fetch
 from app.llm.base import Completion
 from app.llm.mock import MockProvider
+from app.main import create_app
 
 PUBLIC_IP = "93.184.216.34"
 
@@ -36,6 +38,20 @@ def test_sample_returns_canned_facts_without_model_or_limit(client, app):
     assert body["meta"]["provider"] == "none"
     assert provider.prompts == []
     assert "x-llm-provider" not in response.headers
+
+
+def test_sample_is_read_from_configured_samples_dir(settings, sample_text, tmp_path):
+    samples = tmp_path / "elsewhere"
+    samples.mkdir()
+    text = sample_text.replace("Riverside Open Source Hack Day 2026", "Moved Sample Day 2026")
+    (samples / "sample_event.txt").write_text(text, encoding="utf-8")
+    app = create_app(settings.model_copy(update={"samples_dir": str(samples)}))
+    client = TestClient(app, headers={"X-Requested-With": "campaory"})
+
+    response = client.post("/api/brief/extract", json={"source": {"kind": "sample"}})
+
+    assert response.status_code == 200
+    assert by_key(response.json())["event_name"]["value"] == "Moved Sample Day 2026"
 
 
 def test_text_extraction_uses_model_and_marks_needs_review(client, sample_text):
