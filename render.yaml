@@ -33,7 +33,7 @@ services:
       - key: EURI_API_KEY
         sync: false
       - key: EURI_MODEL
-        sync: false
+        value: google/gemma-4-26B-A4B-it
       - key: GOOGLE_OAUTH_CLIENT_ID
         sync: false
       - key: GOOGLE_OAUTH_CLIENT_SECRET

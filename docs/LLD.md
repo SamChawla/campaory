@@ -64,7 +64,7 @@ campaory/
 | `GOOGLE_API_KEY` | | AI Studio key for gemma |
 | `GEMMA_MODEL` | verify in AI Studio | |
 | `EURI_API_KEY` | | Euri key (Bearer) |
-| `EURI_MODEL` | exact Gemma id from Euri | required for `euri` |
+| `EURI_MODEL` | `google/gemma-4-26B-A4B-it` | required for `euri` |
 | `EURI_BASE_URL` | `https://api.euron.one/api/v1/euri` | OpenAI-compatible base |
 | `OLLAMA_URL`, `OLLAMA_MODEL` | `http://localhost:11434`, `gemma3:4b` | stretch |
 | `LLM_FALLBACK_TO_MOCK` | `false` | demo safety net |
