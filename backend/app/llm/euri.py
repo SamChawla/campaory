@@ -67,7 +67,7 @@ class EuriProvider:
 
         text = _first_message_text(body)
         usage = body.get("usage") or {}
-        log.info("llm call provider=%s model=%s latency_ms=%d", self.name, self.model, latency_ms)
+        log.debug("llm http provider=%s model=%s latency_ms=%d", self.name, self.model, latency_ms)
         return Completion(
             text=text,
             provider=self.name,
