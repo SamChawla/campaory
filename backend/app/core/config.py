@@ -33,6 +33,7 @@ class Settings(BaseSettings):
     rate_guest_per_hour: int = 10
     rate_guest_per_day: int = 30
     rate_user_per_hour: int = 40
+    rate_ip_per_minute: int = 120
     llm_daily_cap: int = 500
     free_plan_max_campaigns: int = 1
 
