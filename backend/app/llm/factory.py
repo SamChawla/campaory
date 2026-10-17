@@ -31,7 +31,10 @@ class FallbackProvider:
         temperature: float = 0.4,
     ) -> Completion:
         kwargs = dict(
-            system=system, prompt=prompt, max_output_tokens=max_output_tokens, temperature=temperature
+            system=system,
+            prompt=prompt,
+            max_output_tokens=max_output_tokens,
+            temperature=temperature,
         )
         try:
             return await self.primary.complete(**kwargs)
