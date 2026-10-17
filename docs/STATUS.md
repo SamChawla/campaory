@@ -1,12 +1,12 @@
 # Status
 
-Updated 16 Oct 2026, evening IST.
+Updated 17 Oct 2026 IST.
 
 | Milestone | State | Notes |
 |---|---|---|
 | M0 Skeleton + deploy | Local done; T0.5 open | Health, error shape, SPA fallback, Docker image verified locally. Render deploy needs the account. Alembic step is back in the Dockerfile start command |
 | M1 Domain core | Done | schemas, facts (BR01 gate + tokeniser), planning, platforms, guard, impact, textdiff, posts. 209 backend tests |
-| M2 AI layer + API | Not started | Run the Gemma model check (HANDOFF 3) before T2.3 |
+| M2 AI layer + API | Done (T2.3 replaced by Euri) | `call_validated` + JSON repair, versioned prompts, mock provider, provider factory with labelled mock fallback, SSRF-safe fetch + HTML text, token-bucket limits + daily cap, `/brief/extract`, `/plan/propose`, `/posts/generate|revise|validate`, `/impact/analyze|redraft`, `/config`, security headers, body caps, `X-Requested-With` check. Gemma and Ollama providers removed (ADR-002 note) |
 | M3 | Not started | |
 | M4 Auth + save | Backend done (T4.1 to T4.5); T4.6 to T4.8 open | Models + Alembic `0001_init` (runs on start in Docker), repo, signed session cookie, Google OAuth, `/me`, saved-campaign CRUD. Test-only login at `POST /api/auth/test-login` when `APP_ENV=test`. Needs the Google OAuth client (DEPLOYMENT 2) for a manual login check |
 | M5 to M6 | Not started | |
@@ -22,5 +22,5 @@ Updated 16 Oct 2026, evening IST.
 ## Needs the owner
 - Render account and blueprint deploy (T0.5)
 - Google OAuth client with both redirect URIs (DEPLOYMENT 2), then a manual login on localhost
-- Google AI Studio key and the Gemma model check, written to `docs/MODEL_NOTES.md`
 - Three organizer names for trials (M6)
+- M2: guest model limits use IP plus the `cid` cookie, plus a per-IP bucket at 3x so a rotating cookie cannot bypass them. Signed-in users are keyed by user id. Body cap is 256 KB except `/api/campaigns` (document cap plus 16 KB). The sample extraction returns `meta.provider = "none"`. Daily cap reached without fallback is 503 `llm_unavailable` (ADR-008).
