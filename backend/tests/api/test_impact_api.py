@@ -147,7 +147,7 @@ def test_redraft_proposes_minimal_change_that_passes_guard(client, sample_facts)
     assert body["validation"]["ok"] is True
     assert body["status"] == "draft"
     assert "start_time" in body["facts_used"]
-    assert body["meta"]["prompt_version"] == "redraft.v1"
+    assert body["meta"]["prompt_version"] == "redraft.v2"
 
 
 def test_redraft_refuses_published_post(client, app, sample_facts):

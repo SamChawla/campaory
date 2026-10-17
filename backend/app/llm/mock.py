@@ -19,7 +19,9 @@ from app.llm.prompts import (
     REDRAFT_VERSION,
     REVISE_VERSION,
     block,
+    clock,
     json_block,
+    long_date,
     task_of,
 )
 
@@ -270,28 +272,12 @@ _OPENERS = [
 ]
 
 
-def long_date(iso: str) -> str | None:
-    try:
-        d = date.fromisoformat(iso)
-    except (TypeError, ValueError):
-        return None
-    return f"{d:%A}, {d.day} {d:%B %Y}"
-
-
 def short_date(iso: str) -> str | None:
     try:
         d = date.fromisoformat(iso)
     except (TypeError, ValueError):
         return None
     return f"{d.day} {d:%b}"
-
-
-def clock(value: str) -> str:
-    parsed = parse_time(value) if isinstance(value, str) else None
-    if not parsed:
-        return str(value)
-    h, m = parsed
-    return f"{h % 12 or 12}:{m:02d} {'AM' if h < 12 else 'PM'}"
 
 
 class _Facts:

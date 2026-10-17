@@ -45,7 +45,7 @@ def test_generate_returns_checked_posts(client, sample_facts):
         assert post["validation"]["limit"] > 0
         assert "event_name" in post["facts_used"]
     assert body["meta"]["provider"] == "mock"
-    assert body["meta"]["prompt_version"] == "generate.v1"
+    assert body["meta"]["prompt_version"] == "generate.v2"
     assert response.headers["x-llm-provider"] == "mock"
 
 
@@ -199,7 +199,7 @@ def test_revise_returns_checked_text(client, sample_facts):
     assert body["status"] == "draft"
     assert body["guard_flags"] == []
     assert body["validation"]["ok"] is True
-    assert body["meta"]["prompt_version"] == "revise.v1"
+    assert body["meta"]["prompt_version"] == "revise.v2"
 
 
 def test_custom_instruction_requires_text(client, sample_facts):

@@ -77,7 +77,48 @@ def test_revise_and_redraft_prompts_mark_their_task():
     revise = revise_prompt(facts, "x", "Old text", "make_shorter")
     redraft = redraft_prompt(facts, "x", "Old text", {"key": "venue", "old": "A", "new": "B"})
 
-    assert task_of(revise.user) == "revise.v1"
+    assert task_of(revise.user) == "revise.v2"
     assert json_block(revise.user, "instruction")["code"] == "make_shorter"
-    assert task_of(redraft.user) == "redraft.v1"
+    assert task_of(redraft.user) == "redraft.v2"
     assert json_block(redraft.user, "change") == {"key": "venue", "old": "A", "new": "B"}
+
+
+def test_generate_prompt_gives_readable_dates_and_times():
+    facts = [
+        fact("event_name", "Hack Day"),
+        fact("start_date", "2026-10-24"),
+        fact("start_time", "10:00"),
+        fact("end_time", "17:30"),
+        fact("registration_deadline", "2026-10-22"),
+        fact("event_mode", "offline"),
+    ]
+    item = {"title": "Event announcement", "purpose": "Tell people", "stage": "pre"}
+
+    prompt = generate_prompt(facts, item, ["x"], tone="friendly", language="en")
+
+    assert json_block(prompt.user, "display") == {
+        "start_date": "Saturday, 24 October 2026",
+        "start_time": "10:00 AM",
+        "end_time": "5:30 PM",
+        "registration_deadline": "Thursday, 22 October 2026",
+        "event_mode": "in person",
+    }
+    assert "never ISO" in prompt.system
+
+
+def test_revise_and_redraft_prompts_carry_readable_dates():
+    facts = [fact("event_name", "Hack Day"), fact("start_date", "2026-10-24")]
+
+    revise = revise_prompt(facts, "x", "Old text", "make_shorter")
+    redraft = redraft_prompt(facts, "x", "Old", {"key": "venue", "old": "A", "new": "B"})
+
+    for prompt in (revise, redraft):
+        assert json_block(prompt.user, "display") == {"start_date": "Saturday, 24 October 2026"}
+
+
+def test_display_block_is_omitted_when_nothing_to_format():
+    prompt = generate_prompt(
+        [fact("event_name", "Hack Day")], {"title": "t"}, ["x"], tone="", language="en"
+    )
+
+    assert json_block(prompt.user, "display") is None
