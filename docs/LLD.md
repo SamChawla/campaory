@@ -135,45 +135,58 @@ Fact status values: `confirmed`, `needs_review`, `missing`, `superseded`.
 
 ## 4. Database
 
-SQLAlchemy models; UUID primary keys (stored as native UUID in Postgres, CHAR(36) in SQLite). Timestamps are UTC.
+SQLAlchemy 2 typed models in `db/models.py`, created by Alembic (`backend/alembic/versions/0001_init.py`); tests use `create_all` on in-memory SQLite. UUID columns use `sqlalchemy.Uuid` (native `uuid` in Postgres, `CHAR(32)` hex in SQLite). JSON columns use `JSON` with a `JSONB` variant on Postgres. **List columns (`platforms`, `fact_keys`, `facts_used`, `placeholders`) are JSON arrays, not Postgres `text[]`, so one schema runs on SQLite and Postgres.** SQLite foreign keys are switched on per connection (`PRAGMA foreign_keys=ON`) so cascades behave as in Postgres.
+
+Ids: every table has a server-generated `id` that never leaves the server. The ids from the browser document are stored as `campaigns.client_id` and `doc_id` on child rows, each unique within its parent. Two accounts can therefore hold the same document without key clashes, and the API addresses a campaign by its document id (`client_id`), always together with `user_id`.
+
+Timestamps are `timestamptz` stored in UTC (SQLite keeps naive UTC; UTC is re-attached on load). Naive datetimes are refused. A reloaded document carries the same instants, serialised with `Z` (an offset such as `+05:30` comes back as the equivalent UTC time). The document's own `created_at` and `updated_at` are stored as given.
 
 ```sql
 users(id uuid pk, email text not null, name text, avatar_url text,
-      created_at timestamptz not null default now(), last_login_at timestamptz);
+      created_at timestamptz not null, last_login_at timestamptz);
 create unique index ux_users_email on users(lower(email));
 
 identities(id uuid pk, user_id uuid not null references users(id) on delete cascade,
            provider text not null, subject text not null,
-           unique(provider, subject));
+           unique(provider, subject));                       -- provider: google | test
 
 campaigns(id uuid pk, user_id uuid not null references users(id) on delete cascade,
           client_id uuid not null, name text not null, event_mode text not null,
-          language text not null, tone text, platforms text[] not null,
-          source jsonb not null default '{}', version int not null default 1,
-          created_at timestamptz not null default now(), updated_at timestamptz not null default now(),
+          language text not null, tone text not null, platforms jsonb not null,
+          source jsonb not null, version int not null,      -- 1 on first save
+          created_at timestamptz not null, updated_at timestamptz not null,
           unique(user_id, client_id));
-create index ix_campaigns_user on campaigns(user_id, updated_at desc);
+create index ix_campaigns_user on campaigns(user_id, updated_at);
 
 facts(id uuid pk, campaign_id uuid not null references campaigns(id) on delete cascade,
-      key text not null, value jsonb not null, status text not null, critical boolean not null,
-      source_snippet text, source_ref text, position int not null);
+      doc_id uuid not null, key text not null, value jsonb not null, status text not null,
+      critical boolean not null, not_applicable boolean not null,
+      source_snippet text, source_ref text, position int not null,   -- position = list order
+      unique(campaign_id, doc_id));
 
 plan_items(id uuid pk, campaign_id uuid not null references campaigns(id) on delete cascade,
-           title text not null, purpose text, stage text not null,
-           scheduled_for timestamptz, position int not null, fact_keys text[] not null default '{}');
+           doc_id uuid not null, title text not null, purpose text not null, stage text not null,
+           scheduled_for timestamptz, position int not null, seq int not null,
+           fact_keys jsonb not null, unique(campaign_id, doc_id));   -- seq = list order
 
 posts(id uuid pk, campaign_id uuid not null references campaigns(id) on delete cascade,
       plan_item_id uuid not null references plan_items(id) on delete cascade,
-      platform text not null, text text not null, status text not null,
-      facts_used text[] not null default '{}', guard_flags jsonb not null default '[]',
-      placeholders jsonb not null default '[]', reminder_at timestamptz,
-      published_url text, published_at timestamptz, change_reason text);
+      doc_id uuid not null, platform text not null, text text not null, status text not null,
+      seq int not null, facts_used jsonb not null, guard_flags jsonb not null,
+      placeholders jsonb not null, reminder_at timestamptz,
+      published_url text, published_at timestamptz, change_reason text,
+      unique(campaign_id, doc_id));
 
 post_versions(id uuid pk, post_id uuid not null references posts(id) on delete cascade,
-              text text not null, reason text not null, created_at timestamptz not null default now());
+              doc_id uuid not null, text text not null, reason text not null, seq int not null,
+              created_at timestamptz not null);
 ```
 
-Enum checks (CHECK constraints): `event_mode`, `status` values, `platform in (linkedin, instagram, whatsapp, x)`, `stage in (pre, event, post)`.
+`seq` and `facts.position` keep the document's list order, which can differ from `plan_items.position` (the plan order field in the document).
+
+CHECK constraints, generated from the `Literal` types in `domain/schemas.py`: `ck_campaigns_event_mode`, `ck_campaigns_language`, `ck_facts_status`, `ck_plan_items_stage`, `ck_posts_status`, `ck_posts_platform` (`linkedin, instagram, whatsapp, x`).
+
+Migrations: `alembic upgrade head` from `backend/` (reads `DATABASE_URL`). `make setup` and `make dev` run it for the local SQLite file; the Docker start command runs it before uvicorn.
 
 ERD:
 
@@ -188,12 +201,13 @@ erDiagram
     posts ||--o{ post_versions : keeps
 ```
 
-Repository contract (`db/repo.py`):
-- `create_campaign(user_id, doc) -> Campaign` inserts the whole tree in one transaction; on `unique(user_id, client_id)` conflict returns the existing campaign (idempotent import).
-- `replace_campaign(user_id, id, doc, expected_version) -> Campaign` locks the row (`SELECT ... FOR UPDATE`), checks `version == expected_version`, deletes children, reinserts, increments version. Mismatch raises `AppError(409, "version_conflict")` carrying the current version.
-- `get_campaign(user_id, id)` returns None for foreign or unknown ids (route returns 404).
-- `list_campaigns(user_id)` returns id, name, updated_at, counts by post status.
-- `delete_campaign(user_id, id)`, `delete_user(user_id)`.
+Repository contract (`db/repo.py`). Functions take the SQLAlchemy `Session` first and commit their own work; campaign ids are document ids.
+- `create_campaign(db, user_id, doc, *, max_campaigns=0) -> (CampaignDoc, created)` inserts the whole tree in one transaction; if `(user_id, client_id)` exists it returns the stored campaign unchanged with `created=False` (idempotent import, also on a concurrent insert race). When `max_campaigns > 0` and the user already owns that many, raises `AppError(409, "campaign_limit", details={"limit": n})`; an idempotent repeat never hits the limit.
+- `replace_campaign(db, user_id, id, doc, expected_version) -> CampaignDoc | None` locks the row (`SELECT ... FOR UPDATE`; a no-op on SQLite), checks `version == expected_version`, deletes children, reinserts, increments version. Mismatch raises `AppError(409, "version_conflict", details={"current_version": n})`. Foreign or unknown id returns None.
+- `get_campaign(db, user_id, id) -> CampaignDoc | None`: None for foreign or unknown ids (route returns 404). A saved then loaded document equals the original apart from `version`.
+- `list_campaigns(db, user_id) -> [CampaignSummary(id, name, version, updated_at, post_counts)]`, newest `updated_at` first; `post_counts` has every post status, zero included.
+- `delete_campaign(db, user_id, id) -> bool`, `delete_user(db, user_id) -> bool` (cascades to identities and campaigns).
+- `get_user(db, user_id)`, `upsert_user_from_identity(db, provider, subject, email, name, avatar_url) -> User`: match by `(provider, subject)`, else by `lower(email)` (links the identity), else create. Name and avatar are refreshed on every login; email is updated unless another user owns it. Callers pass only verified emails.
 
 ## 5. API
 
@@ -203,16 +217,17 @@ Base path `/api`. JSON in and out. Errors use one shape (section 5.9). Mutating 
 |---|---|---|---|
 | GET `/health` | none | none | `{status:"ok"}` for Render |
 | GET `/config` | none | R | provider name, model label, limits, `llm_is_mock`, `auth_providers` |
-| GET `/auth/login/google` | none | R | start OAuth, 302 |
-| GET `/auth/callback/google` | none | R | finish OAuth, set cookie, 302 to `/?auth=ok` |
-| POST `/auth/logout` | session | R | clear cookie |
-| GET `/me` | optional | R | `{user: {...}\|null}` |
-| DELETE `/me` | session | R | delete account and data (P1) |
-| GET `/campaigns` | session | R | list saved |
+| GET `/auth/login/google` | none | R | start OAuth (PKCE S256, `state`), 302 to Google; 404 `not_found` when `GOOGLE_OAUTH_CLIENT_ID` is empty |
+| GET `/auth/callback/google` | none | R | finish OAuth, upsert by `(google, sub)`, set cookie, 302 to `/?auth=ok`; any failure (denied, bad state, unverified email) 302 to `/?auth=failed` |
+| POST `/auth/logout` | optional | R | 204, clears the session cookie (also fine when signed out) |
+| POST `/auth/test-login` | none | R | **only when `APP_ENV=test`**: body `{email}`, signs in without Google, returns `{user}`; 404 in every other environment |
+| GET `/me` | optional | R | `{user: {id, email, name, avatar_url}\|null}` |
+| DELETE `/me` | session | R | 204; deletes user, identities and campaigns, clears cookie |
+| GET `/campaigns` | session | R | `{campaigns:[{id,name,version,updated_at,post_counts}]}` |
 | POST `/campaigns` | session | R | create or import document (idempotent) |
 | GET `/campaigns/{id}` | session | R | full document |
 | PUT `/campaigns/{id}` | session | R | replace document with `expected_version` |
-| DELETE `/campaigns/{id}` | session | R | delete |
+| DELETE `/campaigns/{id}` | session | R | 204 |
 | POST `/brief/extract` | none | G | URL or text to candidate facts |
 | POST `/plan/propose` | none | R | confirmed facts to plan items (no model call in MVP) |
 | POST `/posts/generate` | none | G | variants for plan items |
@@ -295,10 +310,14 @@ Request: `{ "changed":{...}, "facts":[...], "post":{...} }`. Response: `{ "propo
 
 ### 5.8 Saved campaigns
 
-- `POST /campaigns` body: the document. 201 with `{id, version}` for new, 200 with the same body for an idempotent repeat. 409 `campaign_limit` when `FREE_PLAN_MAX_CAMPAIGNS` is exceeded (message tells the user to delete one).
-- `PUT /campaigns/{id}` body: `{ "expected_version": n, "doc": {...} }`. 200 `{version: n+1}`; 409 `version_conflict` returns `{current_version}`; client then fetches and asks the user to reload or overwrite.
-- `GET /campaigns/{id}` returns the document with `version`.
-- All return 404 for another user's id.
+All routes need the session cookie (401 `unauthorized` otherwise). `{id}` is the document id (`id` = `client_id`). Unknown, foreign or malformed ids return 404 `not_found` on GET, PUT and DELETE (BR12); every query filters by `user_id`.
+
+- `GET /campaigns` → 200 `{ "campaigns": [ { "id", "name", "version", "updated_at", "post_counts": {"draft":n,"needs_review":n,"approved":n,"scheduled":n,"published":n} } ] }`, newest `updated_at` first.
+- `POST /campaigns` body: the document. 201 `{id, version}` (version 1) for new, 200 with the same shape for an idempotent repeat (the stored campaign is not changed by a repeat). 409 `campaign_limit` with `details.limit` when the user already holds `FREE_PLAN_MAX_CAMPAIGNS` campaigns (0 disables); the message tells the user to delete one.
+- `GET /campaigns/{id}` → 200 the document with its server `version`.
+- `PUT /campaigns/{id}` body: `{ "expected_version": n, "doc": {...} }` (`expected_version >= 1`, unknown keys rejected). 200 `{version: n+1}`; 409 `version_conflict` with `details.current_version`; 422 `validation_error` when `doc.id` differs from `{id}`. Client then fetches and asks the user to reload or overwrite.
+- `DELETE /campaigns/{id}` → 204.
+- Bodies: validated with `CampaignDoc` (unknown fields rejected); not-JSON or invalid UTF-8 is 422 `validation_error`. Size: POST over 512 KB and PUT over 512 KB + 1 KB (room for the wrapper) are 413 `payload_too_large`, checked on `Content-Length` and while streaming, before parsing.
 
 ### 5.9 Errors
 
@@ -467,7 +486,7 @@ Visible focus ring; chips carry text (not only colour); dialogs trap focus; all 
 ## 9. Testing hooks
 
 - `MockProvider` is the default in tests.
-- `conftest.py` provides an app client, in-memory SQLite, a fake clock, and a fake OAuth (a test-only route enabled when `APP_ENV=test` that creates a session for a given email).
+- `conftest.py` provides an app client on in-memory SQLite (`sqlite://`, StaticPool, tables via `create_all`), a fake clock, and a fake OAuth: `POST /api/auth/test-login {email}`, mounted only when `APP_ENV=test`, creates a session for that email (identity provider `test`). `tests/support.py` has `make_doc()` and the `X-Requested-With` header for mutating calls. Google callback tests replace Authlib's `authorize_access_token`.
 - Network in tests is blocked except through `respx` mocks.
 - See [TEST_PLAN](TEST_PLAN.md) for cases.
 

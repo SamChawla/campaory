@@ -8,7 +8,7 @@ Saving a campaign requires an account. We do not want to store passwords, send e
 ## Decision
 - Google OAuth 2.0 / OIDC, authorization code flow, through Authlib (Starlette integration). Scopes: `openid email profile`.
 - GitHub is an optional second provider, added only if Google is done and tested. The `identities` table is keyed by `(provider, subject)` so a second provider needs no migration.
-- Session: Starlette `SessionMiddleware`-style signed cookie, `HttpOnly`, `Secure` in production, `SameSite=Lax`, 14-day lifetime, signed with `SESSION_SECRET`. The cookie holds only `user_id` and an issued-at time.
+- Session: signed cookie `campaory_session` (itsdangerous, `SESSION_SECRET`), `HttpOnly`, `Secure` in production, `SameSite=Lax`, 30-day lifetime (changed from 14 days on 17 Oct 2026 so returning organisers stay signed in through a campaign). The cookie holds only `user_id` and an issued-at time. Authlib keeps OAuth `state` and the PKCE verifier in a separate 10-minute cookie `campaory_oauth` scoped to `/api/auth`.
 - Mutating requests from a signed-in session must carry `X-Requested-With: campaory` (checked server-side). With `SameSite=Lax` and JSON-only bodies this blocks simple cross-site form posts.
 - OAuth `state` and PKCE are on. The post-login redirect target is restricted to relative paths.
 - The server stores: provider, subject, email, display name, avatar URL. Nothing else from Google.

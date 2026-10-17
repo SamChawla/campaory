@@ -5,6 +5,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 from app.core.config import Settings
+from app.db.models import Base
 from app.domain.facts import is_critical
 from app.domain.schemas import Fact, Person
 from app.main import create_app
@@ -64,13 +65,19 @@ def sample_facts() -> list[Fact]:
 @pytest.fixture
 def settings(tmp_path) -> Settings:
     return Settings(
-        _env_file=None, app_env="test", llm_provider="mock", static_dir=str(tmp_path / "static")
+        _env_file=None,
+        app_env="test",
+        llm_provider="mock",
+        static_dir=str(tmp_path / "static"),
+        database_url="sqlite://",
     )
 
 
 @pytest.fixture
 def app(settings):
-    return create_app(settings)
+    app = create_app(settings)
+    Base.metadata.create_all(app.state.db_engine)
+    return app
 
 
 @pytest.fixture

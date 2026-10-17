@@ -7,19 +7,22 @@ Verify every Render and Google step against current dashboards; screens and fiel
 1. Push the repo to GitHub.
 2. Render: New → Blueprint → select the repo. It reads `render.yaml` and creates the web service and a Postgres database.
 3. Set secrets in the Render dashboard (they are `sync: false` in the blueprint): `SESSION_SECRET`, `EURI_API_KEY`, `GOOGLE_OAUTH_CLIENT_ID`, `GOOGLE_OAUTH_CLIENT_SECRET`, `SENTRY_DSN` (optional), `BASE_URL`.
-4. First deploy: watch logs; migrations run on start (`alembic upgrade head`).
+4. First deploy: watch logs; migrations run on start (`alembic upgrade head && uvicorn ...` in the Dockerfile `CMD`).
 5. Open `<service>.onrender.com/api/health`.
 
 ## 2. Google OAuth client
 
-1. Google Cloud console → APIs & Services → OAuth consent screen: app name Campaory, support email, scopes `openid email profile`, publishing status "In production" for public users (otherwise only test users can sign in).
-2. Credentials → Create OAuth client ID → Web application.
-3. Authorized redirect URIs (exact match, no trailing slash differences):
-   - `http://localhost:8000/api/auth/callback/google`
-   - `https://<service>.onrender.com/api/auth/callback/google`
-   - `https://<your-name>.tech/api/auth/callback/google`
-4. Copy client id and secret into Render and `.env`.
-5. `BASE_URL` must match the host users use, because the redirect URI is built from it.
+1. Google Cloud console → APIs & Services → OAuth consent screen (Google Auth Platform → Branding / Audience / Data access in the newer console): app name Campaory, user support email, developer contact email, scopes `openid`, `email`, `profile` (no sensitive scopes, so no verification review). Audience "External". Publishing status: "Testing" limits sign-in to the listed test users (add your own Google accounts there for local checks); switch to "In production" before judges or trial organisers use it.
+2. Credentials → Create credentials → OAuth client ID → Application type "Web application", name `Campaory`.
+3. Authorized redirect URIs. Exact match: scheme, host, port and path, no trailing slash. The app builds the URI as `BASE_URL + /api/auth/callback/google`:
+   - `http://localhost:8000/api/auth/callback/google` (local with `BASE_URL=http://localhost:8000`; after sign-in you land on `:8000/?auth=ok`, which serves the built SPA from `backend/static`)
+   - optional: `http://localhost:5173/api/auth/callback/google` if you run `make dev` and want to land back in the Vite dev server; set `BASE_URL=http://localhost:5173` (the Vite proxy forwards `/api`)
+   - `https://<service>.onrender.com/api/auth/callback/google` (the Render service URL, e.g. `https://campaory.onrender.com/api/auth/callback/google`)
+   - `https://<your-name>.tech/api/auth/callback/google` (once the custom domain is attached)
+4. Authorized JavaScript origins are not needed (the browser never talks to Google directly; the flow is server-side).
+5. Copy the client id and secret into `GOOGLE_OAUTH_CLIENT_ID` / `GOOGLE_OAUTH_CLIENT_SECRET` in Render and in `backend/.env`. Without a client id, `/api/auth/login/google` returns 404 and the app stays guest-only.
+6. `BASE_URL` must be the host users actually use (`http://localhost:8000` locally, `https://<service>.onrender.com` on Render, no trailing slash), because the redirect URI is built from it. A mismatch shows Google's `redirect_uri_mismatch` error.
+7. Check: open `<BASE_URL>/api/auth/login/google`, sign in, and you should land on `/?auth=ok`; `GET /api/me` then returns your profile. `/?auth=failed` means the callback rejected the response (denied consent, expired state after 10 minutes, or an unverified email).
 
 ## 3. Google AI Studio (Gemma)
 
