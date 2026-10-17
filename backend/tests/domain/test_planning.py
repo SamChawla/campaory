@@ -5,7 +5,7 @@ from zoneinfo import ZoneInfo
 import pytest
 
 from app.domain.facts import is_critical
-from app.domain.planning import propose_plan
+from app.domain.planning import event_timing, propose_plan
 from app.domain.schemas import Fact, Person
 
 IST = ZoneInfo("Asia/Kolkata")
@@ -225,3 +225,37 @@ def test_blocked_facts_raise():
             today=TODAY,
             timezone="Asia/Kolkata",
         )
+
+
+def test_event_timing_classifies_past_ongoing_and_upcoming():
+    assert event_timing(date(2026, 9, 20), date(2026, 9, 20), TODAY) == "past"
+    assert event_timing(date(2026, 9, 30), date(2026, 10, 2), TODAY) == "ongoing"
+    assert event_timing(TODAY, TODAY, TODAY) == "ongoing"
+    assert event_timing(date(2026, 10, 2), date(2026, 10, 2), TODAY) == "upcoming"
+
+
+def test_past_event_gets_only_follow_up_posts_from_today():
+    items = plan("2026-09-20")
+
+    assert [i.stage for i in items] == ["post", "post"]
+    times = [i.scheduled_for for i in items]
+    assert times[0] == datetime(2026, 10, 1, 9, 0, tzinfo=IST)
+    assert times[1] - times[0] >= timedelta(days=1)
+    assert all(t.date() >= TODAY for t in times)
+
+
+def test_event_that_ended_yesterday_keeps_normal_follow_up_dates():
+    items = plan("2026-09-30")
+
+    by_title = {i.title: i.scheduled_for for i in items}
+    assert titles(items) == ["Post-event thank-you", "Highlights and resources"]
+    assert by_title["Post-event thank-you"] == datetime(2026, 10, 1, 10, 0, tzinfo=IST)
+    assert by_title["Highlights and resources"] == datetime(2026, 10, 3, 10, 0, tzinfo=IST)
+
+
+def test_ongoing_multi_day_event_starts_with_todays_update():
+    items = plan("2026-09-30", end="2026-10-02")
+
+    assert [i.stage for i in items] == ["event", "post", "post"]
+    assert items[0].scheduled_for == datetime(2026, 10, 1, 9, 0, tzinfo=IST)
+    assert items[1].scheduled_for == datetime(2026, 10, 3, 10, 0, tzinfo=IST)

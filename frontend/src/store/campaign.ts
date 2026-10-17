@@ -69,6 +69,8 @@ interface CampaignState {
   storageError: StorageError;
   storageNotice: null | "reset";
   warnings: string[];
+  /** Server notice from /plan/propose, e.g. the event has already passed. Not persisted. */
+  planNotice: string | null;
   lastMeta: Meta | null;
   validations: Record<string, ValidationEntry>;
   proposals: Record<string, Proposal>;
@@ -88,7 +90,7 @@ interface CampaignState {
   setNoRegistration(on: boolean): void;
   changeFact(key: FactKey, value: FactValue): Promise<"no_impact" | "impact">;
 
-  setPlan(items: ProposedItem[]): void;
+  setPlan(items: ProposedItem[], notice?: string | null): void;
   updatePlanItem(id: string, patch: Partial<Pick<PlanItem, "title" | "purpose" | "scheduled_for" | "stage">>): void;
   addPlanItem(stage: Stage, scheduledFor: string | null): string;
   removePlanItem(id: string): void;
@@ -209,6 +211,7 @@ export const useCampaign = create<CampaignState>()((set, get) => {
     storageError: null,
     storageNotice: null,
     warnings: [],
+    planNotice: null,
     lastMeta: null,
     validations: {},
     proposals: {},
@@ -233,6 +236,7 @@ export const useCampaign = create<CampaignState>()((set, get) => {
         saveError: null,
         conflictVersion: null,
         warnings: [],
+        planNotice: null,
         validations: {},
         proposals: {},
         lastChange: null,
@@ -366,7 +370,8 @@ export const useCampaign = create<CampaignState>()((set, get) => {
 
     // ---- plan -------------------------------------------------------------------------
 
-    setPlan(items) {
+    setPlan(items, notice = null) {
+      set({ planNotice: notice });
       commit((doc) => {
         doc.plan = items.map((it, i) => ({
           id: uuid(),

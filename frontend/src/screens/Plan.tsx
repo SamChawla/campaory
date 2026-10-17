@@ -140,6 +140,7 @@ export function Plan() {
   const doc = useCampaign((s) => s.doc)!;
   const addPlanItem = useCampaign((s) => s.addPlanItem);
   const setPlan = useCampaign((s) => s.setPlan);
+  const planNotice = useCampaign((s) => s.planNotice);
   const generation = useGeneration();
   const noteError = useUi((s) => s.noteError);
   const navigate = useNavigate();
@@ -160,7 +161,7 @@ export function Plan() {
     setError(null);
     try {
       const res = await api.propose({ facts: confirmedFacts(doc.facts), platforms: doc.platforms, today: isoDateIn(new Date(), tz), timezone: tz });
-      setPlan(res.items);
+      setPlan(res.items, res.notice);
     } catch (err) {
       noteError(err);
       setError(errorMessage(err));
@@ -191,6 +192,12 @@ export function Plan() {
             : "There is no plan yet. Make one from your confirmed facts."
         }
       />
+
+      {planNotice && (
+        <p className="banner banner-warn" role="status">
+          {planNotice}
+        </p>
+      )}
 
       <div className="split">
         <section aria-label="Campaign items" className="plan-list">

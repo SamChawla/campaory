@@ -235,3 +235,20 @@ def test_extract_counts_against_guest_limit(client, app, sample_text):
     assert response.status_code == 429
     assert response.json()["error"]["code"] == "rate_limited"
     assert int(response.headers["retry-after"]) > 0
+
+
+def test_past_event_text_gets_a_warning(client, sample_text):
+    text = sample_text.replace("2026", "2020")
+
+    response = client.post("/api/brief/extract", json={"source": {"kind": "text", "text": text}})
+
+    assert response.status_code == 200
+    assert any("already passed" in w for w in response.json()["warnings"])
+
+
+def test_future_event_text_has_no_past_warning(client, sample_text):
+    text = sample_text.replace("2026", "2099")
+
+    response = client.post("/api/brief/extract", json={"source": {"kind": "text", "text": text}})
+
+    assert not any("already passed" in w for w in response.json()["warnings"])

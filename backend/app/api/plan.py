@@ -7,8 +7,8 @@ from fastapi import APIRouter
 
 from app.api.models import PlanRequest, PlanResponse, ProposedItemOut
 from app.core.errors import AppError
-from app.domain.facts import confirmed_map, generation_blockers, valid_timezone
-from app.domain.planning import PlanBlocked, propose_plan
+from app.domain.facts import confirmed_map, generation_blockers, long_date, valid_timezone
+from app.domain.planning import PlanBlocked, event_days, event_timing, propose_plan
 
 router = APIRouter()
 
@@ -44,7 +44,11 @@ def propose(body: PlanRequest) -> PlanResponse:
         )
     except PlanBlocked as exc:
         raise blocked(exc.missing) from exc
+    start_day, end_day = event_days(body.facts)
+    status = event_timing(start_day, end_day, today)
     return PlanResponse(
+        event_status=status,
+        notice=_notice(status, end_day),
         items=[
             ProposedItemOut(
                 title=i.title,
@@ -55,5 +59,16 @@ def propose(body: PlanRequest) -> PlanResponse:
                 platforms=i.platforms,
             )
             for i in items
-        ]
+        ],
     )
+
+
+def _notice(status: str, end_day) -> str | None:
+    if status == "past":
+        return (
+            f"This event ended on {long_date(end_day.isoformat())}, so the plan only has "
+            "follow-up posts. Check the dates if that is wrong."
+        )
+    if status == "ongoing":
+        return "This event is happening now, so the plan starts with today's update."
+    return None

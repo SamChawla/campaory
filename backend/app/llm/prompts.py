@@ -9,10 +9,9 @@ import json
 import re
 from collections.abc import Iterable
 from dataclasses import dataclass
-from datetime import date
 from typing import Any
 
-from app.domain.facts import confirmed, is_filled, parse_time
+from app.domain.facts import confirmed, is_filled, long_date, parse_time
 from app.domain.platforms import INSTAGRAM_MAX_HASHTAGS, LIMITS, WHATSAPP_HARD
 from app.domain.schemas import Fact, Person, Platform
 
@@ -155,14 +154,6 @@ def prompt_facts(facts: Iterable[Fact]) -> dict[str, Any]:
 DISPLAY_DATE_KEYS = ("start_date", "end_date", "registration_deadline")
 DISPLAY_TIME_KEYS = ("start_time", "end_time")
 MODE_WORDS = {"offline": "in person", "online": "online", "hybrid": "in person and online"}
-
-
-def long_date(iso: str) -> str | None:
-    try:
-        d = date.fromisoformat(iso)
-    except (TypeError, ValueError):
-        return None
-    return f"{d:%A}, {d.day} {d:%B %Y}"
 
 
 def clock(value: str) -> str:

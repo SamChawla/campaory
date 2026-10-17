@@ -155,6 +155,8 @@ export interface ProposedItem {
 
 export interface ProposeResponse {
   items: ProposedItem[];
+  event_status: "upcoming" | "ongoing" | "past";
+  notice: string | null;
 }
 
 export interface ValidationIssue {

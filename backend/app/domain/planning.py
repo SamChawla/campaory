@@ -2,6 +2,7 @@
 
 from dataclasses import dataclass, field
 from datetime import date, datetime, time, timedelta
+from typing import Literal
 from zoneinfo import ZoneInfo
 
 from app.domain.facts import confirmed_map, generation_blockers, is_filled, parse_time
@@ -23,6 +24,31 @@ DROP_ORDER = (
 )
 ESSENTIAL = ("Event announcement", "Final registration reminder")
 PEOPLE_KEYS = ("speakers", "mentors", "judges")
+
+
+type EventTiming = Literal["upcoming", "ongoing", "past"]
+
+
+def event_timing(start_day: date, end_day: date, today: date) -> EventTiming:
+    """Where today falls against the event days. A past event gets follow-up posts only."""
+    if end_day < today:
+        return "past"
+    if start_day <= today:
+        return "ongoing"
+    return "upcoming"
+
+
+def event_days(facts: list[Fact]) -> tuple[date, date]:
+    """Confirmed start and end day; end falls back to start when missing or earlier."""
+    by_key = confirmed_map(facts)
+    start_day = date.fromisoformat(str(by_key["start_date"].value))
+    end_day = start_day
+    if "end_date" in by_key:
+        try:
+            end_day = max(start_day, date.fromisoformat(str(by_key["end_date"].value)))
+        except ValueError:
+            end_day = start_day
+    return start_day, end_day
 
 
 class PlanBlocked(ValueError):
@@ -64,22 +90,22 @@ def propose_plan(
 
     by_key = confirmed_map(facts)
     tz = ZoneInfo(timezone)
-    start_day = date.fromisoformat(str(by_key["start_date"].value))
+    start_day, end_day = event_days(facts)
     start_time = _fact_time(by_key, "start_time") or DEFAULT_START
     start = datetime.combine(start_day, start_time, tz)
-    end_day = start_day
-    if "end_date" in by_key:
-        try:
-            end_day = max(start_day, date.fromisoformat(str(by_key["end_date"].value)))
-        except ValueError:
-            end_day = start_day
     now = datetime.combine(today, time(0, 0), tz)
     earliest = _next_at(now, DEFAULT_START)
     days_out = (start_day - today).days
+    timing = event_timing(start_day, end_day, today)
 
-    event_at = max(
-        min(datetime.combine(start_day, EVENT_DAY_UPDATE, tz), start - timedelta(hours=1)), now
-    )
+    if start_day < today:
+        # Already under way (or over): the live update goes out at the first slot today.
+        event_at = earliest
+    else:
+        event_at = max(
+            min(datetime.combine(start_day, EVENT_DAY_UPDATE, tz), start - timedelta(hours=1)),
+            now,
+        )
 
     available = {k for k, f in by_key.items() if is_filled(f.value) and not f.not_applicable}
     has_registration = "registration_url" in available
@@ -180,8 +206,6 @@ def propose_plan(
             )
         )
 
-    pre = _schedule_pre(candidates, earliest, event_at)
-
     selected = [p for p in PLATFORM_ORDER if p in platforms]
 
     def item(title: str, purpose: str, stage: Stage, when: datetime, keys) -> ProposedItem:
@@ -189,22 +213,28 @@ def propose_plan(
             title, purpose, stage, when, [k for k in keys if k in available], list(selected)
         )
 
-    items = [item(c.title, c.purpose, "pre", when, c.keys) for c, when in pre]
-    items.append(
-        item(
-            "Event-day live update",
-            "Share that the event is happening today, with times and place.",
-            "event",
-            event_at,
-            ("event_name", "start_time", "end_time", "venue", "hashtags"),
+    items: list[ProposedItem] = []
+    if timing != "past":
+        pre = _schedule_pre(candidates, earliest, event_at)
+        items = [item(c.title, c.purpose, "pre", when, c.keys) for c, when in pre]
+        items.append(
+            item(
+                "Event-day live update",
+                "Share that the event is happening today, with times and place.",
+                "event",
+                event_at,
+                ("event_name", "start_time", "end_time", "venue", "hashtags"),
+            )
         )
-    )
+    # Follow-ups never land in the past: a finished event gets them from today, a day apart.
+    thanks_at = max(at(end_day + DAY), earliest)
+    highlights_at = max(at(end_day + 3 * DAY), thanks_at + DAY)
     items.append(
         item(
             "Post-event thank-you",
             "Thank attendees, mentors, speakers and partners.",
             "post",
-            at(end_day + DAY),
+            thanks_at,
             ("event_name", "speakers", "mentors", "judges", "partners", "hashtags"),
         )
     )
@@ -213,7 +243,7 @@ def propose_plan(
             "Highlights and resources",
             "Share winners, highlights or resources from the event.",
             "post",
-            at(end_day + 3 * DAY),
+            highlights_at,
             ("event_name", "hashtags"),
         )
     )

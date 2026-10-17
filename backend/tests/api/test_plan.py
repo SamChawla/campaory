@@ -82,3 +82,27 @@ def test_plan_is_not_model_limited(client, app, sample_facts):
 
     for _ in range(app.state.settings.rate_guest_per_hour + 3):
         assert client.post("/api/plan/propose", json=body).status_code == 200
+
+
+def test_past_event_gets_follow_ups_and_a_notice(client, sample_facts):
+    response = client.post(
+        "/api/plan/propose",
+        json={"facts": facts_json(sample_facts), "platforms": ALL, "today": "2026-11-30"},
+    )
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["event_status"] == "past"
+    assert "ended on Saturday, 24 October 2026" in body["notice"]
+    assert [i["stage"] for i in body["items"]] == ["post", "post"]
+    assert all(i["scheduled_for"] >= "2026-11-30" for i in body["items"])
+
+
+def test_upcoming_event_has_no_notice(client, sample_facts):
+    response = client.post(
+        "/api/plan/propose",
+        json={"facts": facts_json(sample_facts), "platforms": ALL, "today": "2026-10-01"},
+    )
+
+    assert response.json()["event_status"] == "upcoming"
+    assert response.json()["notice"] is None

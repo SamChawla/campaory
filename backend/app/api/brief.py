@@ -1,9 +1,10 @@
 """POST /brief/extract (LLD 5.1). The model proposes facts; the human confirms them."""
 
 import hashlib
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime
 from pathlib import Path
 from typing import Any, get_args
+from zoneinfo import ZoneInfo
 
 from fastapi import APIRouter, Request, Response
 from pydantic import ValidationError
@@ -12,7 +13,14 @@ from app.api.deps import Model
 from app.api.models import CandidateFact, ExtractRequest, ExtractResponse, UrlSource
 from app.api.review import label_provider, meta_for, no_model_meta
 from app.core.errors import AppError
-from app.domain.facts import CRITICAL_KEYS, normalize_text, parse_date, parse_time
+from app.domain.facts import (
+    CRITICAL_KEYS,
+    long_date,
+    normalize_text,
+    parse_date,
+    parse_time,
+    valid_timezone,
+)
 from app.domain.schemas import FactKey, Person, Source
 from app.fetch.extract_text import extract_text
 from app.llm.base import call_validated
@@ -140,7 +148,31 @@ def _candidates(
         found[key] = CandidateFact(
             key=key, value="", status="missing", critical=True, source_snippet=None, source_ref=None
         )
+    _warn_if_past(found, warnings)
     return [found[k] for k in FACT_KEYS if k in found]
+
+
+def _warn_if_past(found: dict[str, CandidateFact], warnings: list[str]) -> None:
+    """Old event pages are common; say so before the organizer plans posts for them."""
+    days = []
+    for key in ("end_date", "start_date"):
+        fact = found.get(key)
+        if fact and fact.status == "needs_review":
+            try:
+                days.append(date.fromisoformat(str(fact.value)))
+            except ValueError:
+                continue
+    if not days:
+        return
+    tz_fact = found.get("timezone")
+    tz_name = str(tz_fact.value) if tz_fact and tz_fact.value else "UTC"
+    today = datetime.now(ZoneInfo(tz_name if valid_timezone(tz_name) else "UTC")).date()
+    last = max(days)
+    if last < today:
+        warnings.append(
+            f"This event has already passed ({long_date(last.isoformat())}). "
+            "Check the dates, or plan follow-up posts only."
+        )
 
 
 def _coerce(key: str, value: Any) -> Any:

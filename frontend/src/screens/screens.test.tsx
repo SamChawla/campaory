@@ -64,6 +64,24 @@ describe("plan", () => {
     await userEvent.click(screen.getByRole("button", { name: "Save item" }));
     expect(screen.getByRole("alert")).toHaveTextContent(/must be dated before 24 Oct 2026/);
   });
+
+  test("a past event shows the server's notice with the follow-up plan", async () => {
+    const notice = "This event ended on Saturday, 24 October 2026, so the plan only has follow-up posts. Check the dates if that is wrong.";
+    mockApi({
+      "POST /api/plan/propose": () => ({
+        body: {
+          event_status: "past",
+          notice,
+          items: [{ title: "Post-event thank-you", purpose: "Thank people", stage: "post", scheduled_for: "2026-11-30T09:00:00+05:30", fact_keys: ["event_name"], platforms: ["x"] }],
+        },
+      }),
+    });
+    saveGuest({ ...sampleDoc(), plan: [], posts: [] });
+    renderApp("/plan");
+    await userEvent.click(await screen.findByRole("button", { name: "Make the plan" }));
+    expect(await screen.findByText(notice)).toBeInTheDocument();
+    expect(screen.getByText("Post-event thank-you")).toBeInTheDocument();
+  });
 });
 
 describe("posts", () => {

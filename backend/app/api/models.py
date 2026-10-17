@@ -111,6 +111,8 @@ class ProposedItemOut(BaseModel):
 
 class PlanResponse(BaseModel):
     items: list[ProposedItemOut]
+    event_status: Literal["upcoming", "ongoing", "past"]
+    notice: str | None = None
 
 
 # ---- posts ------------------------------------------------------------------------------

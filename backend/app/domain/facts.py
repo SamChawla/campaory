@@ -360,3 +360,12 @@ def normalize_url(raw: str) -> str | None:
     if query:
         out += "?" + urlencode(query)
     return out
+
+
+def long_date(iso: str) -> str | None:
+    """`2026-10-24` as `Saturday, 24 October 2026`; None if not an ISO date."""
+    try:
+        d = date.fromisoformat(iso)
+    except (TypeError, ValueError):
+        return None
+    return f"{d:%A}, {d.day} {d:%B %Y}"

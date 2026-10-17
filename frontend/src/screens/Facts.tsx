@@ -60,7 +60,7 @@ export function Facts() {
     const tz = safeTimezone(factValue(doc.facts, "timezone") || browserTimezone());
     try {
       const res = await api.propose({ facts: confirmedFacts(doc.facts), platforms: doc.platforms, today: isoDateIn(new Date(), tz), timezone: tz });
-      useCampaign.getState().setPlan(res.items);
+      useCampaign.getState().setPlan(res.items, res.notice);
       navigate(path("plan"));
     } catch (err) {
       noteError(err);
