@@ -2,6 +2,7 @@
 // countdown; the campaign on screen stays editable.
 import { useEffect, useState } from "react";
 import { minutesText } from "../lib/api";
+import { canSignIn, useSession } from "../store/session";
 import { useUi } from "../store/ui";
 
 function clock(ms: number): string {
@@ -14,6 +15,7 @@ function clock(ms: number): string {
 export function LimitBanner({ onRetry }: { onRetry?: () => void }) {
   const until = useUi((s) => s.limitUntil);
   const clear = useUi((s) => s.clearLimit);
+  const signInAvailable = useSession((s) => canSignIn(s.config));
   const [now, setNow] = useState(() => Date.now());
 
   useEffect(() => {
@@ -30,7 +32,7 @@ export function LimitBanner({ onRetry }: { onRetry?: () => void }) {
       <p>
         {ready
           ? "You can try again now."
-          : `You have used your free AI requests for now. Try again in ${minutesText(left / 1000)}, or sign in for a higher limit.`}
+          : `You have used your free AI requests for now. Try again in ${minutesText(left / 1000)}${signInAvailable ? ", or sign in for a higher limit" : ""}.`}
       </p>
       {onRetry && (
         <button

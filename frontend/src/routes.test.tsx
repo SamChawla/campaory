@@ -10,7 +10,7 @@ test("start screen renders the promise and the sample action", () => {
   renderApp("/");
   expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(/event promotion/i);
   expect(screen.getAllByRole("button", { name: /try a sample event/i })).toHaveLength(2);
-  expect(screen.getByText("No account needed. Your work stays in this browser until you sign in to save it.")).toBeInTheDocument();
+  expect(screen.getByText("No account needed. Your work is saved in this browser.")).toBeInTheDocument();
 });
 
 test("nav is present with the brand", () => {
@@ -29,7 +29,7 @@ test("start screen explains the four steps and where guest work is kept", () => 
   renderApp("/");
   expect(screen.getByRole("heading", { name: /how it works/i })).toBeInTheDocument();
   expect(screen.getAllByRole("listitem")).toHaveLength(4);
-  expect(screen.getByText(/stays in this browser until you sign in/i)).toBeInTheDocument();
+  expect(screen.getByText(/your work is saved in this browser/i)).toBeInTheDocument();
 });
 
 test.each(["nav", "hero"])("the %s sample button starts the sample and opens Facts", async (which) => {

@@ -62,7 +62,7 @@ export function Start() {
         <StartForm />
 
         <p className="small muted rise d3">
-          No account needed. Your work stays in this browser until you sign in to save it.
+          No account needed. Your work is saved in this browser.
         </p>
       </section>
 

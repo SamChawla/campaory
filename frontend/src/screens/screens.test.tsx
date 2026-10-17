@@ -205,6 +205,17 @@ describe("sign-in and save (LLD 8.4)", () => {
     expect(await screen.findByText("Sign-in did not finish. Your work is still here.")).toBeInTheDocument();
   });
 
+  test("without sign-in configured, Save keeps the campaign in this browser", async () => {
+    saveGuest(sampleDoc());
+    mockApi({ "GET /api/config": () => ({ body: { provider: "mock", model: "mock", llm_is_mock: true, auth_providers: [] } }) });
+    renderApp("/facts");
+    expect(await screen.findByText("Your work is saved in this browser. Clearing browser data removes it.")).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: "Save now" }));
+    expect(await screen.findByText("Saved in this browser")).toBeInTheDocument();
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(loadGuest().status).toBe("ok");
+  });
+
   test("Save opens the sign-in sheet for guests", async () => {
     saveGuest(sampleDoc());
     renderApp("/facts");

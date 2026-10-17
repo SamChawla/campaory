@@ -76,7 +76,7 @@ Breakpoints: 360 (min), 768, 1024, 1280. Content max width 1200.
 ## 7. Screens not yet mocked (build from this spec)
 
 ### 7.1 Guest notice
-Inside the workspace, below the nav: lime-wash banner, text "Your work is saved on this device only. Sign in to keep it.", button "Save my campaign". Dismissible per session; returns on next visit. A smaller version sits in the mobile header as a "Save" pill.
+Inside the workspace, below the nav: lime-wash banner, text "Your work is saved on this device only. Sign in to keep it.", button "Save my campaign". Dismissible per session; returns on next visit. When the server has no sign-in method (`auth_providers` empty, as in the demo), the text is "Your work is saved in this browser. Clearing browser data removes it." and the button "Save now" writes to localStorage and toasts "Saved in this browser"; no sign-in sheet opens and the limit message drops "or sign in for a higher limit". A smaller version sits in the mobile header as a "Save" pill.
 
 ### 7.2 Sign-in sheet
 Modal on desktop, bottom sheet on mobile. Title "Save your campaign". Body: "Sign in to keep this campaign and come back to it. Your current work comes with you." Primary button "Continue with Google" (standard Google mark, not recoloured). Secondary text button "Not now". Footer line: "We store your name, email and your campaigns. No passwords." Link to privacy note. If GitHub is enabled, a second equal button.

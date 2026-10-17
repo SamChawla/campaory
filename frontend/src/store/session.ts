@@ -53,3 +53,8 @@ export function hasGoogle(config: AppConfig | null): boolean {
 export function hasGithub(config: AppConfig | null): boolean {
   return Boolean(config?.auth_providers?.includes("github"));
 }
+
+/** No sign-in method on this server: saving means keeping the campaign in this browser. */
+export function canSignIn(config: AppConfig | null): boolean {
+  return hasGoogle(config) || hasGithub(config);
+}

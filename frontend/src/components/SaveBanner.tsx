@@ -1,17 +1,32 @@
 // Guest notice, import failures, saved-mode save errors and storage problems
 // (UI_SPEC 7.1, 7.3, 7.7). Lives below the nav inside the workspace.
 import { useNavigate } from "react-router-dom";
+import { saveGuest } from "../lib/storage";
 import { useCampaign } from "../store/campaign";
 import { importGuest } from "../store/importer";
-import { useSession } from "../store/session";
+import { canSignIn, useSession } from "../store/session";
 import { useUi } from "../store/ui";
 import { Dialog } from "./Dialog";
+
+const BROWSER_SAVE_FAILED = {
+  quota: "Could not save on this device. The browser storage is full.",
+  unavailable: "This browser blocks storage. Your work will be lost if you close the page.",
+};
 
 export function useSaveAction() {
   const navigate = useNavigate();
   const user = useSession((s) => s.user);
+  const signInAvailable = useSession((s) => canSignIn(s.config));
   const openSignIn = useUi((s) => s.openSignIn);
+  const toast = useUi((s) => s.toast);
   return async () => {
+    if (!user && !signInAvailable) {
+      const doc = useCampaign.getState().doc;
+      if (!doc) return;
+      const result = saveGuest(doc);
+      toast(result === "ok" ? "Saved in this browser" : BROWSER_SAVE_FAILED[result]);
+      return;
+    }
     if (!user) {
       openSignIn();
       return;
@@ -34,6 +49,7 @@ export function SaveBanner() {
   const hidden = useUi((s) => s.guestBannerHidden);
   const hide = useUi((s) => s.hideGuestBanner);
   const save = useSaveAction();
+  const signInAvailable = useSession((s) => canSignIn(s.config));
   const navigate = useNavigate();
 
   return (
@@ -87,10 +103,14 @@ export function SaveBanner() {
       )}
       {mode === "guest" && doc && !hidden && importState.state === "idle" && (
         <div className="banner" role="region" aria-label="Guest notice">
-          <p>Your work is saved on this device only. Sign in to keep it.</p>
+          <p>
+            {signInAvailable
+              ? "Your work is saved on this device only. Sign in to keep it."
+              : "Your work is saved in this browser. Clearing browser data removes it."}
+          </p>
           <div className="banner-actions">
             <button type="button" className="btn btn-primary" onClick={save}>
-              Save my campaign
+              {signInAvailable ? "Save my campaign" : "Save now"}
             </button>
             <button type="button" className="btn btn-text" onClick={hide}>
               Hide
