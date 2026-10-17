@@ -19,7 +19,7 @@ export function mockApi(handlers: Record<string, Handler> = {}) {
     calls.push({ key, body, headers: (init.headers ?? {}) as Record<string, string> });
     const handler = all[key];
     const reply = handler ? await handler(body, init) : { status: 404, body: { error: { code: "not_found", message: "" } } };
-    return new Response(reply.body === undefined ? "" : JSON.stringify(reply.body), {
+    return new Response(reply.body === undefined ? null : JSON.stringify(reply.body), {
       status: reply.status ?? 200,
       headers: { "Content-Type": "application/json", ...(reply.headers ?? {}) },
     });
