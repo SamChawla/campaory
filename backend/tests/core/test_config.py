@@ -41,3 +41,16 @@ def test_euri_provider_defaults_to_euron_base_url():
 
     assert settings.llm_provider == "euri"
     assert settings.euri_base_url == "https://api.euron.one/api/v1/euri"
+
+
+@pytest.mark.parametrize("provider", ["gemma", "ollama"])
+def test_cut_providers_are_rejected(provider):
+    with pytest.raises(ValidationError):
+        Settings(_env_file=None, llm_provider=provider)
+
+
+def test_cut_provider_settings_are_gone():
+    fields = Settings.model_fields
+
+    for name in ("google_api_key", "gemma_model", "ollama_url", "ollama_model"):
+        assert name not in fields

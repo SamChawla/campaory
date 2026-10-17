@@ -6,7 +6,7 @@ Verify every Render and Google step against current dashboards; screens and fiel
 
 1. Push the repo to GitHub.
 2. Render: New → Blueprint → select the repo. It reads `render.yaml` and creates the web service and a Postgres database.
-3. Set secrets in the Render dashboard (they are `sync: false` in the blueprint): `SESSION_SECRET`, `GOOGLE_API_KEY`, `GEMMA_MODEL`, `GOOGLE_OAUTH_CLIENT_ID`, `GOOGLE_OAUTH_CLIENT_SECRET`, `SENTRY_DSN` (optional), `BASE_URL`.
+3. Set secrets in the Render dashboard (they are `sync: false` in the blueprint): `SESSION_SECRET`, `EURI_API_KEY`, `GOOGLE_OAUTH_CLIENT_ID`, `GOOGLE_OAUTH_CLIENT_SECRET`, `SENTRY_DSN` (optional), `BASE_URL`.
 4. First deploy: watch logs; migrations run on start (`alembic upgrade head`).
 5. Open `<service>.onrender.com/api/health`.
 

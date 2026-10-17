@@ -1,4 +1,4 @@
-# ADR-002: Gemma behind a provider adapter, with mock and Ollama
+# ADR-002: Gemma behind a provider adapter, with mock
 
 Status: Accepted. Date: 2026-10-16.
 
@@ -25,3 +25,6 @@ The challenge theme requires open-weight or open-source AI at the core. The Gemm
 ## Alternatives considered
 - Self-host Gemma on a GPU host: strongest open story, too slow and costly to set up in the time left.
 - A closed model: violates the challenge theme.
+
+## Update, 17 Oct 2026
+Euri replaced Google AI Studio as the way we serve Gemma (Gemma 4, `google/gemma-4-26B-A4B-it`; see `docs/MODEL_NOTES.md`). The `gemma` (AI Studio) and `ollama` providers were never built and are removed from the code and config: `LLM_PROVIDER` is now `mock | euri`, and `GOOGLE_API_KEY`, `GEMMA_MODEL`, `OLLAMA_URL` and `OLLAMA_MODEL` are gone. The interface became `complete(system, prompt, max_output_tokens, temperature) -> Completion` (raw text); JSON extraction, validation and repair live in `call_validated` so every provider shares them.

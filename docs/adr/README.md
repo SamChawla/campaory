@@ -5,7 +5,7 @@ Format: Context, Decision, Consequences, Alternatives. Status is Accepted unless
 | ADR | Title | Status |
 |---|---|---|
 | [001](ADR-001-stack-and-single-service.md) | FastAPI + React (Vite) + PostgreSQL as one Render service | Accepted |
-| [002](ADR-002-llm-provider-adapter.md) | Gemma behind a provider adapter, with mock and Ollama | Accepted |
+| [002](ADR-002-llm-provider-adapter.md) | Gemma behind a provider adapter, with mock | Accepted |
 | [003](ADR-003-guest-first-stateless-api.md) | Guest-first: stateless API, browser persistence | Accepted |
 | [004](ADR-004-auth-oauth-session-cookie.md) | Sign-in with Google OAuth and a server session cookie | Accepted, confirm provider |
 | [005](ADR-005-deterministic-fact-guard.md) | Deterministic fact guard around every LLM output | Accepted |

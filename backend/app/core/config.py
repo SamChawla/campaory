@@ -18,16 +18,12 @@ class Settings(BaseSettings):
     database_url: str = "sqlite:///./dev.db"
     static_dir: str = DEFAULT_STATIC_DIR
 
-    llm_provider: Literal["mock", "gemma", "euri", "ollama"] = "mock"
+    llm_provider: Literal["mock", "euri"] = "mock"
     llm_fallback_to_mock: bool = False
     llm_timeout_seconds: float = 25
-    google_api_key: str = ""
-    gemma_model: str = ""
     euri_api_key: str = ""
     euri_model: str = ""
     euri_base_url: str = "https://api.euron.one/api/v1/euri"
-    ollama_url: str = "http://localhost:11434"
-    ollama_model: str = ""
 
     google_oauth_client_id: str = ""
     google_oauth_client_secret: str = ""

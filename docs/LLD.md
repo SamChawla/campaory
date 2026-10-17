@@ -28,7 +28,7 @@ campaory/
         impact.py             # change impact
         textdiff.py           # word diff
       llm/
-        base.py  gemma.py  euri.py  ollama.py  mock.py  prompts.py  jsonrepair.py
+        base.py  euri.py  mock.py  factory.py  prompts.py  jsonrepair.py
       fetch/
         safe_fetch.py  extract_text.py
       db/
@@ -60,13 +60,10 @@ campaory/
 | `BASE_URL` | `https://campaory.example.tech` | OAuth redirect base |
 | `SESSION_SECRET` | 64 random hex | required in production |
 | `DATABASE_URL` | `postgresql+psycopg://...` or `sqlite:///./dev.db` | |
-| `LLM_PROVIDER` | `mock` / `gemma` / `euri` / `ollama` | default `mock` |
-| `GOOGLE_API_KEY` | | AI Studio key for gemma |
-| `GEMMA_MODEL` | verify in AI Studio | |
+| `LLM_PROVIDER` | `mock` / `euri` | default `mock` |
 | `EURI_API_KEY` | | Euri key (Bearer) |
 | `EURI_MODEL` | `google/gemma-4-26B-A4B-it` | required for `euri` |
 | `EURI_BASE_URL` | `https://api.euron.one/api/v1/euri` | OpenAI-compatible base |
-| `OLLAMA_URL`, `OLLAMA_MODEL` | `http://localhost:11434`, `gemma3:4b` | stretch |
 | `LLM_FALLBACK_TO_MOCK` | `false` (`true` on Render) | demo safety net |
 | `LLM_TIMEOUT_SECONDS` | `25` | timeout plus one retry must fit the 60 s client abort |
 | `GOOGLE_OAUTH_CLIENT_ID`, `GOOGLE_OAUTH_CLIENT_SECRET` | | |

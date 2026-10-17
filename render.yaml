@@ -28,10 +28,6 @@ services:
         sync: false
       - key: SESSION_SECRET
         generateValue: true
-      - key: GOOGLE_API_KEY
-        sync: false
-      - key: GEMMA_MODEL
-        sync: false
       - key: EURI_API_KEY
         sync: false
       - key: EURI_MODEL
