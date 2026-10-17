@@ -9,9 +9,11 @@ PY := $(VENV_BIN)/python
 
 setup:
 	cd backend && python -m venv .venv && $(PY) -m pip install -e ".[dev]"
+	cd backend && $(VENV_BIN)/alembic upgrade head
 	cd frontend && npm ci
 
 dev:
+	cd backend && $(VENV_BIN)/alembic upgrade head
 	(cd backend && $(PY) -m uvicorn app.main:app --reload --port 8000) & \
 	(cd frontend && npm run dev)
 
