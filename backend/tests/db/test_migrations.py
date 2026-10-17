@@ -45,6 +45,27 @@ def test_migration_matches_models(alembic_cfg):
     assert diff == []
 
 
+def _check_names(engine) -> dict[str, set[str]]:
+    inspector = inspect(engine)
+    return {
+        table: {ck["name"] for ck in inspector.get_check_constraints(table)}
+        for table in Base.metadata.tables
+    }
+
+
+def test_migration_check_constraints_match_models(alembic_cfg):
+    cfg, url = alembic_cfg
+    command.upgrade(cfg, "head")
+    migrated = make_engine(url)
+    fresh = make_engine("sqlite://")
+    Base.metadata.create_all(fresh)
+
+    assert _check_names(migrated) == _check_names(fresh)
+    assert "ck_posts_status" in _check_names(migrated)["posts"]
+    migrated.dispose()
+    fresh.dispose()
+
+
 def test_downgrade_to_base_drops_tables(alembic_cfg):
     cfg, url = alembic_cfg
     command.upgrade(cfg, "head")

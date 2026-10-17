@@ -66,9 +66,11 @@ def upgrade() -> None:
         sa.Column("created_at", TS, nullable=False),
         sa.Column("updated_at", TS, nullable=False),
         sa.CheckConstraint(
-            "event_mode IN ('online', 'offline', 'hybrid')", name="ck_campaigns_event_mode"
+            "event_mode IN ('online', 'offline', 'hybrid')", name=op.f("ck_campaigns_event_mode")
         ),
-        sa.CheckConstraint("language IN ('en', 'hi', 'hinglish')", name="ck_campaigns_language"),
+        sa.CheckConstraint(
+            "language IN ('en', 'hi', 'hinglish')", name=op.f("ck_campaigns_language")
+        ),
         sa.ForeignKeyConstraint(
             ["user_id"], ["users.id"], name="fk_campaigns_user_id_users", ondelete="CASCADE"
         ),
@@ -92,7 +94,7 @@ def upgrade() -> None:
         sa.Column("position", sa.Integer(), nullable=False),
         sa.CheckConstraint(
             "status IN ('confirmed', 'needs_review', 'missing', 'superseded')",
-            name="ck_facts_status",
+            name=op.f("ck_facts_status"),
         ),
         sa.ForeignKeyConstraint(
             ["campaign_id"],
@@ -116,7 +118,7 @@ def upgrade() -> None:
         sa.Column("position", sa.Integer(), nullable=False),
         sa.Column("seq", sa.Integer(), nullable=False),
         sa.Column("fact_keys", JSON, nullable=False),
-        sa.CheckConstraint("stage IN ('pre', 'event', 'post')", name="ck_plan_items_stage"),
+        sa.CheckConstraint("stage IN ('pre', 'event', 'post')", name=op.f("ck_plan_items_stage")),
         sa.ForeignKeyConstraint(
             ["campaign_id"],
             ["campaigns.id"],
@@ -145,11 +147,11 @@ def upgrade() -> None:
         sa.Column("published_at", TS, nullable=True),
         sa.Column("change_reason", sa.Text(), nullable=True),
         sa.CheckConstraint(
-            "platform IN ('linkedin', 'instagram', 'whatsapp', 'x')", name="ck_posts_platform"
+            "platform IN ('linkedin', 'instagram', 'whatsapp', 'x')", name=op.f("ck_posts_platform")
         ),
         sa.CheckConstraint(
             "status IN ('draft', 'needs_review', 'approved', 'scheduled', 'published')",
-            name="ck_posts_status",
+            name=op.f("ck_posts_status"),
         ),
         sa.ForeignKeyConstraint(
             ["campaign_id"],
