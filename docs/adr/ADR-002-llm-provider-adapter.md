@@ -8,7 +8,8 @@ The challenge theme requires open-weight or open-source AI at the core. The Gemm
 ## Decision
 - Define `LLMProvider.generate_json(task, system, prompt, schema, ...)` in `llm/base.py`.
 - Providers, chosen by `LLM_PROVIDER`:
-  - `gemma`: Gemma through the Google AI Studio REST API (`GEMMA_MODEL`, `GOOGLE_API_KEY`). Default in production.
+  - `gemma`: Gemma through the Google AI Studio REST API (`GEMMA_MODEL`, `GOOGLE_API_KEY`).
+  - `euri`: Gemma 4 (`google/gemma-4-26B-A4B-it`) through the OpenAI-compatible Euri API (`EURI_API_KEY`, `EURI_MODEL`). Default in production since 17 Oct 2026; see `docs/MODEL_NOTES.md`.
   - `mock`: deterministic outputs built from the input facts. Default in tests and local dev.
   - `ollama`: local Gemma through Ollama (`OLLAMA_URL`, `OLLAMA_MODEL`). Stretch goal, config only.
 - Do not rely on provider JSON mode or system-instruction support. Ask for JSON in the prompt, parse, validate with Pydantic, and make one repair attempt before failing.

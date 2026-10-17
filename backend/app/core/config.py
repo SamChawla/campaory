@@ -20,7 +20,7 @@ class Settings(BaseSettings):
 
     llm_provider: Literal["mock", "gemma", "euri", "ollama"] = "mock"
     llm_fallback_to_mock: bool = False
-    llm_timeout_seconds: float = 45
+    llm_timeout_seconds: float = 25
     google_api_key: str = ""
     gemma_model: str = ""
     euri_api_key: str = ""

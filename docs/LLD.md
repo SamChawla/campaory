@@ -67,8 +67,8 @@ campaory/
 | `EURI_MODEL` | `google/gemma-4-26B-A4B-it` | required for `euri` |
 | `EURI_BASE_URL` | `https://api.euron.one/api/v1/euri` | OpenAI-compatible base |
 | `OLLAMA_URL`, `OLLAMA_MODEL` | `http://localhost:11434`, `gemma3:4b` | stretch |
-| `LLM_FALLBACK_TO_MOCK` | `false` | demo safety net |
-| `LLM_TIMEOUT_SECONDS` | `45` | |
+| `LLM_FALLBACK_TO_MOCK` | `false` (`true` on Render) | demo safety net |
+| `LLM_TIMEOUT_SECONDS` | `25` | timeout plus one retry must fit the 60 s client abort |
 | `GOOGLE_OAUTH_CLIENT_ID`, `GOOGLE_OAUTH_CLIENT_SECRET` | | |
 | `GITHUB_OAUTH_CLIENT_ID`, `GITHUB_OAUTH_CLIENT_SECRET` | | optional |
 | `RATE_GUEST_PER_HOUR`, `RATE_GUEST_PER_DAY`, `RATE_USER_PER_HOUR`, `LLM_DAILY_CAP` | `10,30,40,500` | |
